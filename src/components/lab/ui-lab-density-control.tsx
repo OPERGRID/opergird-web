@@ -13,20 +13,14 @@ export function UiLabDensityControl() {
   }, [density]);
 
   return (
-    <div className="og-ui-lab-density">
-      <div>
-        <p className="og-ui-lab-control-label">Density</p>
+    <div className="og-ui-lab-density" aria-label="Pilih density UI">
+      <span className="og-ui-lab-density__label">Density</span>
 
-        <p className="og-ui-lab-control-copy">
-          Ubah kepadatan global untuk memeriksa tinggi control dan ritme data.
-        </p>
-      </div>
-
-      <div className="og-ui-lab-density__actions" aria-label="Pilih density UI">
+      <div className="og-ui-lab-density__actions">
         {designSystem.density.values.map((value) => (
           <Button
             key={value}
-            variant={density === value ? "primary" : "secondary"}
+            variant={density === value ? "primary" : "ghost"}
             size="sm"
             aria-pressed={density === value}
             onClick={() => {

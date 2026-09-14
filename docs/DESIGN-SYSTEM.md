@@ -18,6 +18,22 @@ It must not look like:
 The interface may borrow the precision and signal language of technical
 instrumentation, but must preserve long-session readability.
 
+### Premium Restraint
+
+OPERGRID uses a deliberately compact visual scale.
+
+The premium character comes from:
+
+- precise typography;
+- controlled whitespace;
+- quiet borders;
+- small radii;
+- restrained accent usage;
+- disciplined data alignment.
+
+Premium does not mean larger typography, larger cards, heavier shadows, or
+more visual effects.
+
 Core product rule:
 
 **Global UI, contextual workflow.**
@@ -74,17 +90,17 @@ Do not use JetBrains Mono for every number embedded in prose.
 
 ### Type scale
 
-| Token   | Size | Typical use                 |
-| ------- | ---: | --------------------------- |
-| display | 36px | exceptional KPI / hero data |
-| h1      | 30px | page title                  |
-| h2      | 22px | major section               |
-| h3      | 18px | subsection                  |
-| body-lg | 16px | emphasized prose            |
-| body    | 14px | primary application text    |
-| ui      | 14px | controls / navigation       |
-| small   | 13px | compact UI / tables         |
-| caption | 12px | metadata                    |
+| Token   |   Size | Typical use                          |
+| ------- | -----: | ------------------------------------ |
+| display |   30px | KPI / high-priority operational data |
+| h1      |   19px | page title                           |
+| h2      | 14.5px | major section                        |
+| h3      |   13px | subsection                           |
+| body-lg |   14px | emphasized prose                     |
+| body    | 12.5px | primary application text             |
+| ui      | 12.5px | controls / navigation                |
+| small   | 11.5px | compact UI / tables                  |
+| caption | 10.5px | metadata                             |
 
 The default working density is optimized around 14px application text.
 

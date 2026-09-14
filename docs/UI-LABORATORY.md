@@ -52,3 +52,20 @@ accepted.
 This keeps:
 
 **Global UI, contextual workflow.**
+
+## Premium restraint checkpoint
+
+The accepted visual direction is compact and quiet.
+
+Review specifically for:
+
+- page heading near 19px, not oversized;
+- body/UI text near 12.5px;
+- compact navigation around 13-14px;
+- KPI/data values around 30px when emphasis is justified;
+- 8px primary panel radius;
+- low-noise surfaces and borders;
+- accent cyan used as signal rather than decoration.
+
+If the page feels like a showcase or marketing dashboard, reduce visual
+weight before feature development.

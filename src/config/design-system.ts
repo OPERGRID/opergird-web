@@ -1,6 +1,7 @@
 export const designSystem = {
   identity: {
     philosophy: "Industrial Precision + Enterprise Clarity",
+    visualPrinciple: "Premium Restraint",
     uiRule: "Global UI, contextual workflow",
   },
 
@@ -12,15 +13,15 @@ export const designSystem = {
     },
 
     size: {
-      display: "2.25rem",
-      h1: "1.875rem",
-      h2: "1.375rem",
-      h3: "1.125rem",
-      bodyLarge: "1rem",
-      body: "0.875rem",
-      ui: "0.875rem",
-      small: "0.8125rem",
-      caption: "0.75rem",
+      display: "1.875rem",
+      h1: "1.1875rem",
+      h2: "0.90625rem",
+      h3: "0.8125rem",
+      bodyLarge: "0.875rem",
+      body: "0.78125rem",
+      ui: "0.78125rem",
+      small: "0.71875rem",
+      caption: "0.65625rem",
     },
   },
 
@@ -30,12 +31,12 @@ export const designSystem = {
   },
 
   radius: {
-    xs: "0.25rem",
-    sm: "0.375rem",
-    md: "0.5rem",
-    lg: "0.625rem",
-    xl: "0.75rem",
-    xxl: "0.875rem",
+    xs: "0.1875rem",
+    sm: "0.3125rem",
+    md: "0.375rem",
+    lg: "0.5rem",
+    xl: "0.625rem",
+    xxl: "0.75rem",
     pill: "999px",
   },
 
@@ -55,8 +56,8 @@ export const designSystem = {
   motion: {
     micro: "120ms",
     hover: "150ms",
-    shell: "200ms",
-    dialog: "200ms",
+    shell: "180ms",
+    dialog: "180ms",
   },
 
   icon: {
