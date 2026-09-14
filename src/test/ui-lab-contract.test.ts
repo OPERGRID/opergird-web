@@ -3,36 +3,39 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-describe("OPERGRID complete UI Laboratory contract", () => {
-  const page = readFileSync(
-    join(process.cwd(), "src/app/(workspace)/ui-lab/page.tsx"),
-    "utf8",
-  );
+const pageSource = readFileSync(
+  join(process.cwd(), "src/app/(workspace)/ui-lab/page.tsx"),
+  "utf8",
+);
 
-  it("contains all global visual review sections", () => {
-    const requiredSections = [
-      "Typography System",
-      "Color System",
-      "Semantic Status",
-      "Buttons & Actions",
-      "Form Controls",
-      "Surfaces & Elevation",
-      "Spacing Scale",
-      "Radius Scale",
-      "Iconography",
-      "Operational Data Pattern",
-      "System States",
-      "Divider & Hierarchy",
-      "Responsive Review",
-      "Global Primitive Inventory",
+describe("OPERGRID UI Laboratory contract", () => {
+  it("contains the complete registry categories", () => {
+    const categories = [
+      "Foundation",
+      "Actions",
+      "Form & Input",
+      "Navigation",
+      "Data Display",
+      "Feedback & State",
+      "Overlay & Floating UI",
+      "Layout & Page Structure",
+      "Operational & Enterprise",
     ];
 
-    for (const section of requiredSections) {
-      expect(page).toContain(section);
+    for (const category of categories) {
+      expect(pageSource).toContain(category);
     }
   });
 
-  it("does not introduce business feature workflow", () => {
-    expect(page).not.toContain('from "@/features/');
+  it("uses global production components and never imports features", () => {
+    expect(pageSource).toContain("@/components/ui/");
+
+    expect(pageSource).not.toContain("@/features/");
+  });
+
+  it("keeps planned components as registry entries instead of fake local implementations", () => {
+    expect(pageSource).toContain('status: "planned"');
+
+    expect(pageSource).toContain("Global Component Registry");
   });
 });

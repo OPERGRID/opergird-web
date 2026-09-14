@@ -2,104 +2,98 @@
 
 ## Purpose
 
-`/ui-lab` is the internal visual contract for the global OPERGRID Design System.
+`/ui-lab` is the living registry and visual validation environment for the
+OPERGRID global production component system.
 
-It is not a business module.
+It is not a feature page and it must not become a second implementation of the
+design system.
 
-The laboratory exists so global visual decisions are reviewed before feature
-development.
+## Core rule
 
-## Visual direction
+**UI Lab documents production components. UI Lab does not invent production
+components.**
 
-**Industrial Precision + Enterprise Clarity + Premium Restraint**
+If a component is marked **Ready**, the actual reusable implementation must
+exist under `src/components/ui` or `src/components/layout`.
 
-Premium character comes from:
+If a component is marked **Planned**, UI Lab lists it in the registry but does
+not fake the component using page-specific CSS.
 
-- compact typography;
-- disciplined spacing;
-- quiet surfaces;
-- thin borders;
-- small engineered radii;
-- deliberate operational data typography;
-- accent color used as signal, not decoration.
+## Registry scope
 
-## Complete review catalog
+The registry intentionally includes more than basic primitives.
 
-The laboratory validates:
+It covers:
 
-1. Typography System
-2. Color System
-3. Semantic Status
-4. Buttons & Actions
-5. Form Controls
-6. Surfaces & Elevation
-7. Spacing Scale
-8. Radius Scale
-9. Iconography
-10. Operational Data Pattern
-11. System States
-12. Divider & Hierarchy
-13. Responsive Review
-14. Global Primitive Inventory
+- foundation;
+- actions;
+- form and input;
+- navigation;
+- data display;
+- feedback and system states;
+- overlay and floating UI;
+- layout and page structure;
+- operational and enterprise interaction patterns.
 
-## Review matrix
+## Global component categories
 
-Review `/ui-lab` in:
+### Foundation
 
-- dark theme;
-- light theme;
-- comfortable density;
-- standard density;
-- compact density;
-- sidebar expanded;
-- sidebar collapsed;
-- desktop width;
-- tablet width;
-- mobile width;
-- keyboard-only navigation;
-- browser zoom at 100% and 125%.
+Typography, color tokens, spacing, radius, iconography, motion, focus,
+density and themes.
 
-## Typography acceptance
+### Actions
 
-Primary scale:
+Button, Icon Button, loading and disabled actions, Split Button, Button Group
+and copy actions.
 
-- Page title: 19px / Chakra Petch
-- Section title: 14.5px / Chakra Petch
-- Body and UI: 12.5px / Inter
-- Small UI: 11.5px / Inter
-- Caption: 10.5px / Inter
-- Technical / operational values: JetBrains Mono
+### Form and input
 
-Typography should feel compact, readable, and operational.
+Input, Select, Textarea, Search, Checkbox, Switch, Radio Group, Combobox,
+Multi Select, Autocomplete, date/time controls, Number Input, Password Input,
+File Upload, Dropzone and structured form fields.
 
-It should not resemble a marketing website.
+### Navigation
 
-## Color acceptance
+Tabs, Breadcrumb, Dropdown Menu, Context Menu, Pagination, Stepper, Sidebar
+Navigation and Command Palette.
 
-Cyan is a signal.
+### Data display
 
-Do not use cyan as a dominant page background.
+Card, Surface, Badge, Table, Data Table behavior, metrics, description lists,
+key/value display, avatars, progress, timeline, tree view, accordion and
+collapsible patterns.
 
-Status colors retain the same semantic meaning across modules.
+### Feedback and system state
 
-## Surface acceptance
+Alert, Toast, Skeleton, Spinner, Empty State, Error State, Permission State,
+Offline State and loading overlays.
 
-Use surfaces only when grouping materially improves comprehension.
+### Overlay and floating UI
 
-Do not turn every element into a card.
+Dialog, confirmation dialog, Drawer, Sheet, Popover, Tooltip and dropdown
+panels.
 
-## Feature gate
+### Layout and page structure
 
-If a global visual inconsistency exists, fix it at:
+AppShell, PageContainer, PageHeader, Toolbar, FilterBar, SectionHeader,
+Divider, Grid, Stack, SplitPane, MasterDetail and StickyActionBar.
 
-- Design System;
-- global primitive;
-- AppShell;
+### Operational and enterprise patterns
 
-before feature development.
+Status summary, filter chips, advanced filters, saved filters, bulk actions,
+selection counter, audit trail, activity feed, approval state, workflow step,
+entity header, metadata panel, attachments, import/export feedback, conflict
+state and unsaved-change state.
 
-Do not hide global problems with feature-local CSS.
+## Review rule
 
-Core rule:
+Before a global component is marked Ready:
 
-**Global UI, contextual workflow.**
+1. dark mode must be reviewed;
+2. light mode must be reviewed;
+3. standard, compact and comfortable density must remain usable;
+4. keyboard focus must be visible;
+5. desktop and mobile layout must remain coherent;
+6. the component must have a production implementation outside UI Lab;
+7. feature code must be able to reuse it without copying UI-Lab CSS.

@@ -3,33 +3,32 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { designSystem, type OpergridDensity } from "@/config/design-system";
+
+const densities = ["comfortable", "standard", "compact"] as const;
+
+type Density = (typeof densities)[number];
 
 export function UiLabDensityControl() {
-  const [density, setDensity] = useState<OpergridDensity>(designSystem.density.default);
+  const [density, setDensity] = useState<Density>("standard");
 
   useEffect(() => {
     document.documentElement.dataset.density = density;
   }, [density]);
 
   return (
-    <div className="og-ui-lab-density" aria-label="Pilih density UI">
-      <span className="og-ui-lab-density__label">Density</span>
-
-      <div className="og-ui-lab-density__actions">
-        {designSystem.density.values.map((value) => (
-          <Button
-            key={value}
-            variant={density === value ? "primary" : "ghost"}
-            aria-pressed={density === value}
-            onClick={() => {
-              setDensity(value);
-            }}
-          >
-            {value}
-          </Button>
-        ))}
-      </div>
+    <div className="og-ui-lab-density" role="group" aria-label="UI density">
+      {densities.map((item) => (
+        <Button
+          key={item}
+          variant={density === item ? "primary" : "ghost"}
+          aria-pressed={density === item}
+          onClick={() => {
+            setDensity(item);
+          }}
+        >
+          {item}
+        </Button>
+      ))}
     </div>
   );
 }
