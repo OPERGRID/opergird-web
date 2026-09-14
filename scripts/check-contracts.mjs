@@ -13,6 +13,7 @@ const requiredFiles = [
   "docs/FEATURE-RULES.md",
   "docs/AI-CODING-PROTOCOL.md",
   "docs/DEFINITION-OF-DONE.md",
+  "docs/DESIGN-SYSTEM.md",
   "docs/DEVELOPMENT-REQUIREMENTS.md",
   "docs/DEPENDENCY-POLICY.md",
   "docs/GIT-WORKFLOW.md",
@@ -39,6 +40,7 @@ for (const relativePath of requiredFiles) {
 
 const agentsPath = path.join(root, "AGENTS.md");
 const productPath = path.join(root, "docs", "OPERGRID-PRODUCT.md");
+const designSystemPath = path.join(root, "docs", "DESIGN-SYSTEM.md");
 
 if (fs.existsSync(agentsPath)) {
   const agents = fs.readFileSync(agentsPath, "utf8");
@@ -61,6 +63,18 @@ if (fs.existsSync(productPath)) {
 
   if (!product.includes("It is not:")) {
     failures.push("OPERGRID-PRODUCT.md is missing non-goals.");
+  }
+}
+
+if (fs.existsSync(designSystemPath)) {
+  const designSystem = fs.readFileSync(designSystemPath, "utf8");
+
+  if (!designSystem.includes("Industrial Precision + Enterprise Clarity")) {
+    failures.push("DESIGN-SYSTEM.md is missing the OPERGRID design philosophy.");
+  }
+
+  if (!designSystem.includes("Global UI, contextual workflow")) {
+    failures.push("DESIGN-SYSTEM.md is missing the global UI rule.");
   }
 }
 

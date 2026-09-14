@@ -95,3 +95,16 @@ For substantial PowerShell patches:
 - verify native command exit codes;
 - run quality gates before commit;
 - do not hide dependency conflicts with `--force` or `--legacy-peer-deps`.
+
+## Design System rule
+
+Before creating or changing UI, read:
+
+`docs/DESIGN-SYSTEM.md`
+
+OPERGRID visual direction is:
+
+**Industrial Precision + Enterprise Clarity**
+
+Do not create local visual tokens inside a feature when a global token exists.
+Do not invent module-specific typography, color, radius, spacing, or status colors.
