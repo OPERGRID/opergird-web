@@ -119,3 +119,13 @@ Reuse the global primitive first.
 
 If a missing capability is broadly reusable, improve the global primitive
 instead of cloning a local version.
+
+## AppShell rule
+
+Before changing workspace chrome, navigation, global page gutters, sidebar,
+topbar, or theme-control placement, read:
+
+`docs/APP-SHELL.md`
+
+Feature routes must render inside the shared workspace shell and must not
+recreate global application chrome.

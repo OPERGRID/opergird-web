@@ -1,13 +1,11 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
+
+import { AppShell } from "@/components/layout/app-shell";
 
 type WorkspaceLayoutProps = {
   children: ReactNode;
 };
 
 export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
-  /*
-   * Persistent SPA-like AppShell will be added
-   * during Global UI Foundation.
-   */
-  return children;
+  return <AppShell>{children}</AppShell>;
 }

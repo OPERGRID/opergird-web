@@ -15,6 +15,7 @@ const requiredFiles = [
   "docs/DEFINITION-OF-DONE.md",
   "docs/DESIGN-SYSTEM.md",
   "docs/UI-PRIMITIVES.md",
+  "docs/APP-SHELL.md",
   "docs/DEVELOPMENT-REQUIREMENTS.md",
   "docs/DEPENDENCY-POLICY.md",
   "docs/GIT-WORKFLOW.md",
