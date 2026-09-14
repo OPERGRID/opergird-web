@@ -14,6 +14,7 @@ const requiredFiles = [
   "docs/AI-CODING-PROTOCOL.md",
   "docs/DEFINITION-OF-DONE.md",
   "docs/DESIGN-SYSTEM.md",
+  "docs/UI-PRIMITIVES.md",
   "docs/DEVELOPMENT-REQUIREMENTS.md",
   "docs/DEPENDENCY-POLICY.md",
   "docs/GIT-WORKFLOW.md",

@@ -108,3 +108,14 @@ OPERGRID visual direction is:
 
 Do not create local visual tokens inside a feature when a global token exists.
 Do not invent module-specific typography, color, radius, spacing, or status colors.
+
+## Global primitive rule
+
+Before creating feature-local controls, read:
+
+`docs/UI-PRIMITIVES.md`
+
+Reuse the global primitive first.
+
+If a missing capability is broadly reusable, improve the global primitive
+instead of cloning a local version.
