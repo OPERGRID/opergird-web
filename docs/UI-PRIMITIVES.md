@@ -125,3 +125,12 @@ All primitives must retain:
 - semantic HTML;
 - error messaging;
 - state meaning beyond color alone.
+
+## Global component system
+
+For the production component contract and geometry rules, read:
+
+`docs/GLOBAL-COMPONENT-SYSTEM.md`
+
+The shared component API, not UI-Lab-specific markup, is the production source
+of truth.

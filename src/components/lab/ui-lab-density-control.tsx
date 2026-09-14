@@ -21,7 +21,6 @@ export function UiLabDensityControl() {
           <Button
             key={value}
             variant={density === value ? "primary" : "ghost"}
-            size="sm"
             aria-pressed={density === value}
             onClick={() => {
               setDensity(value);

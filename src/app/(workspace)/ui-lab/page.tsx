@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 import { UiLabDensityControl } from "@/components/lab/ui-lab-density-control";
+import { UiLabGlobalComponents } from "@/components/lab/ui-lab-global-components";
 import { PageContainer } from "@/components/layout/page-container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -143,7 +144,7 @@ const typographyScale = [
     role: "Operational data",
     family: "JetBrains Mono",
     size: "contextual",
-    sample: "150.00 kV Â· 346.8 A Â· 21:48:07",
+    sample: "150.00 kV Ã‚Â· 346.8 A Ã‚Â· 21:48:07",
     className: "og-ui-lab-type--mono",
   },
 ] as const;
@@ -188,7 +189,7 @@ const tableRows = [
   {
     asset: "TOBA-TRF-01",
     location: "GI Toba",
-    value: "82.4 Â°C",
+    value: "82.4 Ã‚Â°C",
     status: "Warning",
     severity: "warning",
     updated: "6 mnt",
@@ -211,8 +212,8 @@ export default function UiLabPage() {
           <h1 className="opergrid-page-title">UI Laboratory</h1>
 
           <p className="og-page-heading__description">
-            Complete global UI reference Â· Premium Restraint Â· dark / light / density
-            review
+            Complete global UI reference Ã‚Â· Premium Restraint Ã‚Â· dark / light /
+            density review
           </p>
         </div>
 
@@ -311,7 +312,7 @@ export default function UiLabPage() {
                   <div className="og-ui-lab-spec-meta">
                     <strong>{item.role}</strong>
                     <span>
-                      {item.family} Â· {item.size}
+                      {item.family} Ã‚Â· {item.size}
                     </span>
                   </div>
 
@@ -424,10 +425,10 @@ export default function UiLabPage() {
                 <span className="og-ui-lab-demo-label">Size</span>
 
                 <div className="og-ui-lab-control-row">
-                  <Button size="sm">Small</Button>
-                  <Button size="md">Medium</Button>
-                  <Button size="lg">Large</Button>
-                  <Button size="icon" aria-label="More actions">
+                  <Button>Small</Button>
+                  <Button>Medium</Button>
+                  <Button>Large</Button>
+                  <Button iconOnly aria-label="More actions">
                     <MoreHorizontal size={16} aria-hidden="true" />
                   </Button>
                 </div>
@@ -614,7 +615,7 @@ export default function UiLabPage() {
 
                 <div>
                   <h2>Iconography</h2>
-                  <p>Lucide only Â· restrained stroke</p>
+                  <p>Lucide only Ã‚Â· restrained stroke</p>
                 </div>
               </div>
             </header>
@@ -724,9 +725,7 @@ export default function UiLabPage() {
                 <CircleHelp size={20} aria-hidden="true" />
                 <strong>Empty</strong>
                 <span>Belum ada data untuk ditampilkan.</span>
-                <Button variant="secondary" size="sm">
-                  Tambah data
-                </Button>
+                <Button variant="secondary">Tambah data</Button>
               </div>
 
               <div className="og-ui-lab-state-card">
@@ -740,9 +739,7 @@ export default function UiLabPage() {
                 <XCircle size={20} aria-hidden="true" />
                 <strong>Error</strong>
                 <span>Data gagal dimuat. Coba kembali.</span>
-                <Button variant="secondary" size="sm">
-                  Muat ulang
-                </Button>
+                <Button variant="secondary">Muat ulang</Button>
               </div>
             </div>
           </Surface>
@@ -784,7 +781,7 @@ export default function UiLabPage() {
 
             <div className="og-ui-lab-breakpoints">
               <div>
-                <span data-font="mono">â‰¥ 1024</span>
+                <span data-font="mono">Ã¢â€°Â¥ 1024</span>
                 <strong>Desktop</strong>
                 <span>Persistent sidebar</span>
               </div>
@@ -844,6 +841,8 @@ export default function UiLabPage() {
             </table>
           </div>
         </Surface>
+
+        <UiLabGlobalComponents />
 
         <Surface tone="subtle" className="og-ui-lab-review-note">
           <AlertTriangle size={18} aria-hidden="true" />

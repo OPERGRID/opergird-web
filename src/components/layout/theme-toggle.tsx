@@ -21,7 +21,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" aria-label="Mengubah tema" disabled>
+      <Button variant="ghost" iconOnly aria-label="Mengubah tema" disabled>
         <span className="og-theme-toggle__placeholder" aria-hidden="true" />
       </Button>
     );
@@ -32,7 +32,7 @@ export function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="icon"
+      iconOnly
       aria-label={isDark ? "Gunakan tema terang" : "Gunakan tema gelap"}
       title={isDark ? "Tema terang" : "Tema gelap"}
       onClick={() => {

@@ -57,7 +57,7 @@ export function AppShell({ children }: AppShellProps) {
           <Button
             className="og-sidebar__mobile-close"
             variant="ghost"
-            size="icon"
+            iconOnly
             aria-label="Tutup navigasi"
             onClick={() => {
               setMobileOpen(false);
@@ -157,7 +157,7 @@ export function AppShell({ children }: AppShellProps) {
             <Button
               className="og-topbar__menu"
               variant="ghost"
-              size="icon"
+              iconOnly
               aria-label="Buka navigasi"
               onClick={() => {
                 setMobileOpen(true);

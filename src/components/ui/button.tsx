@@ -11,16 +11,14 @@ const buttonVariants = cva("og-button", {
       ghost: "og-button--ghost",
       danger: "og-button--danger",
     },
-    size: {
-      sm: "og-button--sm",
-      md: "og-button--md",
-      lg: "og-button--lg",
-      icon: "og-button--icon",
+    iconOnly: {
+      true: "og-button--icon-only",
+      false: "",
     },
   },
   defaultVariants: {
     variant: "primary",
-    size: "md",
+    iconOnly: false,
   },
 });
 
@@ -32,7 +30,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
 export function Button({
   className,
   variant,
-  size,
+  iconOnly,
   loading = false,
   disabled,
   children,
@@ -47,7 +45,7 @@ export function Button({
       className={cn(
         buttonVariants({
           variant,
-          size,
+          iconOnly,
         }),
         className,
       )}

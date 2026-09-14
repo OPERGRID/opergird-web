@@ -140,3 +140,16 @@ and the `/ui-lab` route to validate the shared visual language.
 
 Fix global inconsistencies at the Design System / primitive / shell layer,
 not with feature-local visual patches.
+
+## Global Component System rule
+
+Before creating generic UI inside a feature, read:
+
+`docs/GLOBAL-COMPONENT-SYSTEM.md`
+
+Feature code must reuse the global production component system. Do not create
+feature-local replacements for Button, Card, Alert, form controls, Table,
+Pagination, Tabs, Dialog, EmptyState, PageHeader or Toolbar merely to change
+appearance.
+
+Feature owns workflow. Global UI owns appearance and interaction language.
