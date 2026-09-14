@@ -15,7 +15,8 @@
     "typegen": "next typegen",
     "typecheck": "next typegen \u0026\u0026 tsc --noEmit",
     "arch:check": "node scripts/check-architecture.mjs",
-    "check": "npm run lint \u0026\u0026 npm run arch:check \u0026\u0026 npm run typecheck \u0026\u0026 npm run test \u0026\u0026 npm run build"
+    "contract:check": "node scripts/check-contracts.mjs",
+    "check": "npm run lint \u0026\u0026 npm run arch:check \u0026\u0026 npm run contract:check \u0026\u0026 npm run typecheck \u0026\u0026 npm run test \u0026\u0026 npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

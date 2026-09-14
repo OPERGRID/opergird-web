@@ -1,9 +1,97 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# AGENTS.md - OPERGRID Coding Contract
 
-# This is NOT the Next.js you know
+This file is mandatory guidance for AI-assisted coding.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+Before changing OPERGRID, read:
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+1. `docs/OPERGRID-PRODUCT.md`
+2. `docs/APPLICATION-ARCHITECTURE.md`
+3. `docs/FEATURE-ARCHITECTURE.md`
+4. `docs/ROUTING-CONTRACT.md`
+5. `docs/FEATURE-RULES.md`
+6. `docs/AI-CODING-PROTOCOL.md`
+7. `docs/DEFINITION-OF-DONE.md`
+8. the README inside the feature being modified.
 
-<!-- END:nextjs-agent-rules -->
+## Non-negotiable principles
+
+OPERGRID is an operational web platform.
+
+It is NOT:
+
+- SCADA;
+- a command center;
+- a collection of independent dashboards.
+
+Use:
+
+**Global UI, contextual workflow.**
+
+## Global-first rule
+
+Before creating a local:
+
+- page layout;
+- button;
+- card;
+- input;
+- select;
+- table;
+- badge;
+- dialog;
+- alert;
+- loading state;
+- empty state;
+- spacing rule;
+- typography rule;
+
+check the global implementation first.
+
+If reusable behavior is missing, improve the global system instead of
+creating a local clone.
+
+## Architecture rule
+
+- `src/app` = routing/composition.
+- `src/features` = business/domain workflow.
+- `src/components` = shared UI/layout/patterns.
+- `src/lib` = technical infrastructure.
+- `src/config` = centralized configuration.
+
+Do not reverse these dependency directions.
+
+## Workflow rule
+
+Before implementing substantial feature behavior:
+
+1. define user goal;
+2. define workflow;
+3. identify input/output;
+4. identify shared data;
+5. identify related modules;
+6. agree on the flow;
+7. implement.
+
+Do not invent workflow silently.
+
+## Quality rule
+
+A task is not complete merely because the page renders or build passes.
+
+Run:
+
+`npm run check`
+
+and satisfy:
+
+`docs/DEFINITION-OF-DONE.md`
+
+## Patch rule
+
+For substantial PowerShell patches:
+
+- provide one complete executable patch;
+- use UTF-8 without BOM;
+- verify native command exit codes;
+- run quality gates before commit;
+- do not hide dependency conflicts with `--force` or `--legacy-peer-deps`.
