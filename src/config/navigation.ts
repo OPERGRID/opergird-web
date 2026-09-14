@@ -12,6 +12,12 @@ export const workspaceNavigation: readonly NavigationItem[] = [
     href: "/",
     description: "Operational workspace",
   },
+  {
+    id: "ui-laboratory",
+    label: "UI Laboratory",
+    href: "/ui-lab",
+    description: "Design system validation",
+  },
 ] as const;
 
 export function isNavigationItemActive(pathname: string, href: string): boolean {

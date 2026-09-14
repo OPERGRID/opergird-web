@@ -129,3 +129,14 @@ topbar, or theme-control placement, read:
 
 Feature routes must render inside the shared workspace shell and must not
 recreate global application chrome.
+
+## UI Laboratory rule
+
+Before feature UI development, use:
+
+`docs/UI-LABORATORY.md`
+
+and the `/ui-lab` route to validate the shared visual language.
+
+Fix global inconsistencies at the Design System / primitive / shell layer,
+not with feature-local visual patches.

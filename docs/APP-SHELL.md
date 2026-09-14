@@ -99,3 +99,10 @@ Do not treat the placeholder text as a final user model.
 ## Product rule
 
 **Global UI, contextual workflow.**
+
+## UI Laboratory
+
+The internal route `/ui-lab` is allowed in workspace navigation as a
+Design System validation surface.
+
+It must not contain business workflow or become a substitute for feature pages.
