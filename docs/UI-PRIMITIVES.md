@@ -1,136 +1,15 @@
 # OPERGRID Global UI Primitives
 
-## Purpose
+Import directly from production component files under `src/components/ui`. Do not create feature-local copies or a large barrel export that blurs server/client boundaries.
 
-Global primitives are the reusable interaction vocabulary of OPERGRID.
+## Control language
 
-Features must reuse these primitives before creating local equivalents.
+Buttons use one height and purpose variants: `primary`, `secondary`, `ghost`, and `danger`. Icon-only buttons are square at that same height. Input, search, select, date, time, and action controls align to the same geometry.
 
-## Current primitives
+Fields carry labels, helper text, required state, invalid state, and disabled/read-only state. Select, searchable select, and multi-select share a trigger and a searchable listbox panel. The `SelectOption` model supports disabled options and async-ready option replacement. Date/time fields share segmented input and calendar styling.
 
-- Button
-- Input
-- Select
-- Badge
-- Surface
-- Divider
-- Skeleton
+## Data and state
 
-## Import rule
+Badge severity is global; domain labels remain feature-owned. Table primitives preserve semantic markup. AdvancedDataTable adds TanStack sorting, filtering, visibility, selection, pagination, and wide-table scrolling. Alert, EmptyState, ErrorState, Skeleton, Spinner, and loader components express system state.
 
-Import directly from the component file.
-
-Example:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
-
-Do not introduce a large barrel export that can blur server/client boundaries.
-
-## Button
-
-Variants:
-
-- primary
-- secondary
-- ghost
-- danger
-
-Sizes:
-
-- sm
-- md
-- lg
-- icon
-
-Primary action must remain visually dominant.
-
-Do not place multiple primary buttons in one local action group without a
-clear hierarchy.
-
-## Input and Select
-
-Inputs own common:
-
-- label;
-- description;
-- required indicator;
-- invalid state;
-- error message;
-- accessibility relationships.
-
-Features should not rebuild this structure repeatedly.
-
-## Badge
-
-Badge is for concise categorical state.
-
-Severity variants:
-
-- neutral
-- info
-- normal
-- warning
-- high
-- critical
-
-Business status text remains feature-specific.
-
-Color meaning remains global.
-
-## Surface
-
-Surface groups related content.
-
-Do not wrap every piece of information in a card.
-
-Variants:
-
-- default
-- subtle
-- elevated
-
-Selected state uses the Design System accent border / subtle illumination.
-
-## Divider
-
-Use to separate adjacent content when spacing alone is insufficient.
-
-Do not over-segment pages with excessive divider lines.
-
-## Skeleton
-
-Use for loading placeholders when the approximate layout is known.
-
-Respect reduced-motion preference.
-
-## Feature rule
-
-A feature may create a domain-specific composition such as:
-
-- hierarchy tree;
-- timeline;
-- measurement grid;
-
-but should build that composition from global primitives where practical.
-
-## Accessibility
-
-All primitives must retain:
-
-- keyboard usability;
-- visible focus;
-- disabled state;
-- semantic HTML;
-- error messaging;
-- state meaning beyond color alone.
-
-## Global component system
-
-For the production component contract and geometry rules, read:
-
-`docs/GLOBAL-COMPONENT-SYSTEM.md`
-
-The shared component API, not UI-Lab-specific markup, is the production source
-of truth.
+React Aria Components handles select, calendar, dialog, popover, menu, tooltip, and tab interaction. Sonner provides toast delivery. Visual styling remains in OPERGRID stylesheets.

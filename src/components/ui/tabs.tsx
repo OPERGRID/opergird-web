@@ -1,15 +1,14 @@
 "use client";
 
 import { type ReactNode } from "react";
-
-import { cn } from "@/lib/utils/cn";
+import { Tab, TabList, TabPanel, Tabs as AriaTabs } from "react-aria-components";
 
 export type TabItem = {
   value: string;
   label: string;
+  content?: ReactNode;
   disabled?: boolean;
 };
-
 export type TabsProps = {
   items: readonly TabItem[];
   value: string;
@@ -28,26 +27,29 @@ export function Tabs({
   className,
 }: TabsProps) {
   return (
-    <div className={cn("og-tabs", className)}>
-      <div className="og-tabs__list" role="tablist" aria-label={ariaLabel}>
-        {items.map((item) => (
-          <button
-            key={item.value}
-            type="button"
-            role="tab"
-            className={cn("og-tabs__tab", value === item.value && "og-tabs__tab--active")}
-            aria-selected={value === item.value}
-            disabled={item.disabled}
-            onClick={() => {
-              onValueChange(item.value);
-            }}
-          >
+    <AriaTabs
+      selectedKey={value}
+      onSelectionChange={(key) => onValueChange(String(key))}
+      className={`og-tabs ${className ?? ""}`}
+    >
+      <TabList aria-label={ariaLabel} className="og-tabs__list" items={items}>
+        {(item) => (
+          <Tab id={item.value} isDisabled={item.disabled} className="og-tabs__tab">
             {item.label}
-          </button>
-        ))}
-      </div>
-
+          </Tab>
+        )}
+      </TabList>
       {trailing ? <div className="og-tabs__trailing">{trailing}</div> : null}
-    </div>
+      {items.map((item) => (
+        <TabPanel
+          key={item.value}
+          id={item.value}
+          shouldForceMount
+          className="og-tabs__panel"
+        >
+          {item.content}
+        </TabPanel>
+      ))}
+    </AriaTabs>
   );
 }

@@ -13,10 +13,10 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "typegen": "next typegen",
-    "typecheck": "next typegen \u0026\u0026 tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "arch:check": "node scripts/check-architecture.mjs",
     "contract:check": "node scripts/check-contracts.mjs",
-    "check": "npm run lint \u0026\u0026 npm run arch:check \u0026\u0026 npm run contract:check \u0026\u0026 npm run typecheck \u0026\u0026 npm run test \u0026\u0026 npm run build"
+    "check": "npm run lint && npm run arch:check && npm run contract:check && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -31,6 +31,7 @@
     "next": "16.3.5",
     "next-themes": "^0.4.6",
     "react": "19.2.8",
+    "react-aria-components": "^1.21.1",
     "react-dom": "19.2.8",
     "react-hook-form": "^7.88.0",
     "server-only": "^0.0.1",
@@ -58,7 +59,7 @@
     "vitest": "^5.0.0"
   },
   "engines": {
-    "node": "\u003e=24.0.0"
+    "node": ">=24.0.0"
   },
   "packageManager": "npm@11.8.0"
 }

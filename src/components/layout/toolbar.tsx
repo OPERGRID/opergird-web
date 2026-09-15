@@ -15,7 +15,12 @@ export function Toolbar({
   ...props
 }: ToolbarProps) {
   return (
-    <div className={cn("og-toolbar", className)} {...props}>
+    <div
+      role="toolbar"
+      aria-label="Aksi halaman"
+      className={cn("og-toolbar", className)}
+      {...props}
+    >
       <div className="og-toolbar__leading">{leading ?? children}</div>
 
       {trailing ? <div className="og-toolbar__trailing">{trailing}</div> : null}

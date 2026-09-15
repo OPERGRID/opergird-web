@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useState } from "react";
+import { Dialog as AriaDialog, Modal, ModalOverlay } from "react-aria-components";
 
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -29,127 +30,131 @@ export function AppShell({ children }: AppShellProps) {
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  return (
-    <div className={cn("og-app-shell", sidebarCollapsed && "og-app-shell--collapsed")}>
-      <aside
-        className={cn("og-sidebar", mobileOpen && "og-sidebar--mobile-open")}
-        aria-label="Navigasi utama"
-      >
-        <div className="og-sidebar__brand">
-          <Link
-            href="/"
-            className="og-brand"
-            onClick={() => {
-              setMobileOpen(false);
-            }}
-          >
-            <span className="og-brand__mark" aria-hidden="true">
-              <Grid2X2 size={20} strokeWidth={1.8} />
-            </span>
+  const sidebar = (
+    <aside
+      className={cn("og-sidebar", mobileOpen && "og-sidebar--mobile-open")}
+      aria-label="Navigasi utama"
+    >
+      <div className="og-sidebar__brand">
+        <Link
+          href="/"
+          className="og-brand"
+          onClick={() => {
+            setMobileOpen(false);
+          }}
+        >
+          <span className="og-brand__mark" aria-hidden="true">
+            <Grid2X2 size={20} strokeWidth={1.8} />
+          </span>
 
-            <span className="og-brand__copy">
-              <strong className="og-brand__name">OPERGRID</strong>
+          <span className="og-brand__copy">
+            <strong className="og-brand__name">OPERGRID</strong>
 
-              <span className="og-brand__descriptor">Operational Grid</span>
-            </span>
-          </Link>
+            <span className="og-brand__descriptor">Operational Grid</span>
+          </span>
+        </Link>
 
-          <Button
-            className="og-sidebar__mobile-close"
-            variant="ghost"
-            iconOnly
-            aria-label="Tutup navigasi"
-            onClick={() => {
-              setMobileOpen(false);
-            }}
-          >
-            <X size={18} strokeWidth={1.8} aria-hidden="true" />
-          </Button>
-        </div>
-
-        <nav className="og-sidebar__nav">
-          <p className="og-sidebar__section-label">Workspace</p>
-
-          <ul className="og-sidebar__list">
-            {workspaceNavigation.map((item) => {
-              const active = isNavigationItemActive(pathname, item.href);
-
-              return (
-                <li key={item.id}>
-                  <Link
-                    href={item.href}
-                    className={cn("og-nav-item", active && "og-nav-item--active")}
-                    aria-current={active ? "page" : undefined}
-                    title={sidebarCollapsed ? item.label : undefined}
-                    onClick={() => {
-                      setMobileOpen(false);
-                    }}
-                  >
-                    <span className="og-nav-item__icon" aria-hidden="true">
-                      <Grid2X2 size={18} strokeWidth={1.8} />
-                    </span>
-
-                    <span className="og-nav-item__content">
-                      <span className="og-nav-item__label">{item.label}</span>
-
-                      {item.description ? (
-                        <span className="og-nav-item__description">
-                          {item.description}
-                        </span>
-                      ) : null}
-                    </span>
-
-                    <ChevronRight
-                      className="og-nav-item__chevron"
-                      size={15}
-                      strokeWidth={1.8}
-                      aria-hidden="true"
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        <div className="og-sidebar__footer">
-          <button
-            type="button"
-            className="og-sidebar__collapse"
-            onClick={() => {
-              setSidebarCollapsed((current) => !current);
-            }}
-            aria-label={sidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
-            title={sidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
-          >
-            {sidebarCollapsed ? (
-              <PanelLeftOpen size={18} strokeWidth={1.8} aria-hidden="true" />
-            ) : (
-              <PanelLeftClose size={18} strokeWidth={1.8} aria-hidden="true" />
-            )}
-
-            <span>Ciutkan sidebar</span>
-
-            <ChevronLeft
-              className="og-sidebar__collapse-chevron"
-              size={15}
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
-          </button>
-        </div>
-      </aside>
-
-      {mobileOpen ? (
-        <button
-          type="button"
-          className="og-sidebar-backdrop"
+        <Button
+          className="og-sidebar__mobile-close"
+          variant="ghost"
+          iconOnly
           aria-label="Tutup navigasi"
           onClick={() => {
             setMobileOpen(false);
           }}
-        />
-      ) : null}
+        >
+          <X size={18} strokeWidth={1.8} aria-hidden="true" />
+        </Button>
+      </div>
+
+      <nav className="og-sidebar__nav">
+        <p className="og-sidebar__section-label">Workspace</p>
+
+        <ul className="og-sidebar__list">
+          {workspaceNavigation.map((item) => {
+            const active = isNavigationItemActive(pathname, item.href);
+
+            return (
+              <li key={item.id}>
+                <Link
+                  href={item.href}
+                  className={cn("og-nav-item", active && "og-nav-item--active")}
+                  aria-current={active ? "page" : undefined}
+                  title={sidebarCollapsed ? item.label : undefined}
+                  onClick={() => {
+                    setMobileOpen(false);
+                  }}
+                >
+                  <span className="og-nav-item__icon" aria-hidden="true">
+                    <Grid2X2 size={18} strokeWidth={1.8} />
+                  </span>
+
+                  <span className="og-nav-item__content">
+                    <span className="og-nav-item__label">{item.label}</span>
+
+                    {item.description ? (
+                      <span className="og-nav-item__description">{item.description}</span>
+                    ) : null}
+                  </span>
+
+                  <ChevronRight
+                    className="og-nav-item__chevron"
+                    size={15}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      <div className="og-sidebar__footer">
+        <button
+          type="button"
+          className="og-sidebar__collapse"
+          onClick={() => {
+            setSidebarCollapsed((current) => !current);
+          }}
+          aria-label={sidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
+          title={sidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
+        >
+          {sidebarCollapsed ? (
+            <PanelLeftOpen size={18} strokeWidth={1.8} aria-hidden="true" />
+          ) : (
+            <PanelLeftClose size={18} strokeWidth={1.8} aria-hidden="true" />
+          )}
+
+          <span>Ciutkan sidebar</span>
+
+          <ChevronLeft
+            className="og-sidebar__collapse-chevron"
+            size={15}
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+        </button>
+      </div>
+    </aside>
+  );
+
+  return (
+    <div className={cn("og-app-shell", sidebarCollapsed && "og-app-shell--collapsed")}>
+      <div className="og-sidebar-desktop">{sidebar}</div>
+
+      <ModalOverlay
+        isOpen={mobileOpen}
+        onOpenChange={setMobileOpen}
+        isDismissable
+        className="og-sidebar-overlay"
+      >
+        <Modal className="og-sidebar-modal">
+          <AriaDialog className="og-sidebar-dialog" aria-label="Navigasi utama">
+            {sidebar}
+          </AriaDialog>
+        </Modal>
+      </ModalOverlay>
 
       <div className="og-workspace">
         <header className="og-topbar">
@@ -159,6 +164,8 @@ export function AppShell({ children }: AppShellProps) {
               variant="ghost"
               iconOnly
               aria-label="Buka navigasi"
+              aria-expanded={mobileOpen}
+              aria-haspopup="dialog"
               onClick={() => {
                 setMobileOpen(true);
               }}
@@ -176,7 +183,11 @@ export function AppShell({ children }: AppShellProps) {
           <div className="og-topbar__actions">
             <ThemeToggle />
 
-            <div className="og-user-placeholder" aria-label="Area profil pengguna">
+            <div
+              className="og-user-placeholder"
+              role="group"
+              aria-label="Area profil pengguna"
+            >
               <span className="og-user-placeholder__avatar" aria-hidden="true">
                 OP
               </span>

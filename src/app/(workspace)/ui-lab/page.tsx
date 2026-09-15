@@ -1,45 +1,90 @@
 "use client";
 
-import {
-  Bell,
-  Check,
-  ChevronDown,
-  CircleAlert,
-  Download,
-  Filter,
-  MoreHorizontal,
-  Plus,
-  RefreshCw,
-  Settings2,
-  Trash2,
-  Upload,
-} from "lucide-react";
-import { useState } from "react";
+import { Bell, MoreHorizontal, Plus } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { type LegacyColumnDef } from "@tanstack/react-table/legacy";
 
-import { UiLabDensityControl } from "@/components/lab/ui-lab-density-control";
 import { PageContainer } from "@/components/layout/page-container";
 import { PageHeader } from "@/components/layout/page-header";
+import {
+  FilterBar,
+  Grid,
+  MasterDetail,
+  SectionHeader,
+  SplitPane,
+  Stack,
+  StickyActionBar,
+} from "@/components/layout/patterns";
 import { Toolbar } from "@/components/layout/toolbar";
+import { AdvancedDataTable } from "@/components/ui/advanced-data-table";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  ButtonGroup,
+  CopyAction,
+  IconButton,
+  SplitButton,
+} from "@/components/ui/button-actions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog } from "@/components/ui/dialog";
+import {
+  DatePicker,
+  DateRangePicker,
+  DateTimePicker,
+  TimePicker,
+} from "@/components/ui/date-time";
+import { Dialog, ConfirmDialog, Drawer } from "@/components/ui/dialog";
+import { Avatar, MonoValue, Progress, UserChip } from "@/components/ui/display";
 import { Divider } from "@/components/ui/divider";
 import { EmptyState } from "@/components/ui/empty-state";
+import {
+  Accordion,
+  ActivityFeed,
+  AdvancedFilter,
+  ApprovalState,
+  AttachmentList,
+  BulkActionBar,
+  ConflictState,
+  DescriptionList,
+  EntityHeader,
+  ExportAction,
+  FilterChips,
+  ImportSummary,
+  MetadataPanel,
+  Metric,
+  SavedFilter,
+  Timeline,
+  TreeView,
+  UnsavedChanges,
+  WorkflowStep,
+} from "@/components/ui/enterprise";
+import { FieldGroup } from "@/components/ui/field-group";
+import { Dropzone, FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
+import {
+  ModalLoader,
+  PageLoader,
+  ProgressLoader,
+  SectionLoader,
+} from "@/components/ui/loading";
+import { Breadcrumb, CommandPalette, Stepper } from "@/components/ui/navigation";
+import { NumberInput } from "@/components/ui/number-input";
+import { DropdownMenu, Popover, Tooltip } from "@/components/ui/overlays";
 import { Pagination } from "@/components/ui/pagination";
+import { PasswordInput } from "@/components/ui/password-input";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { SearchField } from "@/components/ui/search-field";
-import { Select } from "@/components/ui/select";
+import {
+  AsyncSelect,
+  MultiSelect,
+  SearchableSelect,
+  Select,
+  type SelectOption,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
+import { ErrorState, NoPermissionState, OfflineState } from "@/components/ui/states";
 import { Surface } from "@/components/ui/surface";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -53,813 +98,871 @@ import {
 } from "@/components/ui/table";
 import { Tabs } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Toast } from "@/components/ui/toast";
 
-type RegistryStatus = "ready" | "planned";
-
-type RegistryItem = {
-  name: string;
-  status: RegistryStatus;
+const sections = [
+  "Foundation",
+  "Actions",
+  "Form & Input",
+  "Navigation",
+  "Data Display",
+  "Feedback & States",
+  "Overlay",
+  "Layout",
+  "Operational / Enterprise",
+  "Responsive",
+  "Production Page Composition",
+] as const;
+const selectOptions: SelectOption[] = [
+  { value: "150", label: "150 kV", description: "Transmisi" },
+  { value: "70", label: "70 kV", description: "Transmisi" },
+  { value: "20", label: "20 kV", description: "Distribusi" },
+  { value: "500", label: "500 kV", description: "Transmisi" },
+  { value: "275", label: "275 kV", description: "Transmisi" },
+  { value: "11", label: "11 kV", description: "Distribusi" },
+  { value: "10", label: "10 kV", description: "Distribusi" },
+  { value: "6", label: "6 kV", description: "Distribusi" },
+  { value: "110", label: "110 kV", description: "Transmisi" },
+  { value: "66", label: "66 kV", description: "Distribusi" },
+  { value: "33", label: "33 kV", description: "Distribusi" },
+  { value: "13.8", label: "13.8 kV", description: "Pembangkitan" },
+  { value: "3.3", label: "3.3 kV", description: "Pemakaian sendiri" },
+  { value: "765", label: "765 kV", description: "Transmisi" },
+  { value: "220", label: "220 kV", description: "Transmisi" },
+  { value: "132", label: "132 kV", description: "Transmisi" },
+  { value: "88", label: "88 kV", description: "Transmisi" },
+  { value: "30", label: "30 kV", description: "Distribusi" },
+  { value: "22", label: "22 kV", description: "Distribusi" },
+  { value: "6.6", label: "6.6 kV", description: "Pembangkitan" },
+  { value: "0.4", label: "0.4 kV", description: "Tegangan rendah" },
+  { value: "0.23", label: "0.23 kV", description: "Tegangan rendah" },
+  { value: "off", label: "Tidak tersedia", disabled: true },
+];
+type Sample = {
+  id: string;
+  asset: string;
+  location: string;
+  voltage: string;
+  status: string;
+  updated: string;
 };
-
-type RegistryGroup = {
-  title: string;
-  items: readonly RegistryItem[];
-};
-
-const registry: readonly RegistryGroup[] = [
+const rows: Sample[] = [
   {
-    title: "Foundation",
-    items: [
-      { name: "Typography", status: "ready" },
-      { name: "Color tokens", status: "ready" },
-      { name: "Spacing scale", status: "ready" },
-      { name: "Radius scale", status: "ready" },
-      { name: "Iconography", status: "ready" },
-      { name: "Motion", status: "ready" },
-      { name: "Focus state", status: "ready" },
-      { name: "Density", status: "ready" },
-      { name: "Dark / Light theme", status: "ready" },
-    ],
+    id: "1",
+    asset: "Gardu Induk Bandung",
+    location: "BDG-001",
+    voltage: "150 kV",
+    status: "Normal",
+    updated: "14 Sep 2026",
   },
   {
-    title: "Actions",
-    items: [
-      { name: "Button", status: "ready" },
-      { name: "Icon Button", status: "ready" },
-      { name: "Button loading", status: "ready" },
-      { name: "Button disabled", status: "ready" },
-      { name: "Split Button", status: "planned" },
-      { name: "Button Group", status: "planned" },
-      { name: "Copy Action", status: "planned" },
-    ],
+    id: "2",
+    asset: "Gardu Induk Cimahi",
+    location: "CMH-014",
+    voltage: "70 kV",
+    status: "Review",
+    updated: "13 Sep 2026",
   },
   {
-    title: "Form & Input",
-    items: [
-      { name: "Input", status: "ready" },
-      { name: "Select", status: "ready" },
-      { name: "Textarea", status: "ready" },
-      { name: "Search Field", status: "ready" },
-      { name: "Checkbox", status: "ready" },
-      { name: "Switch", status: "ready" },
-      { name: "Radio Group", status: "planned" },
-      { name: "Combobox", status: "planned" },
-      { name: "Multi Select", status: "planned" },
-      { name: "Autocomplete", status: "planned" },
-      { name: "Date Picker", status: "planned" },
-      { name: "Date Range Picker", status: "planned" },
-      { name: "Time Picker", status: "planned" },
-      { name: "Date Time Picker", status: "planned" },
-      { name: "Number Input", status: "planned" },
-      { name: "Password Input", status: "planned" },
-      { name: "File Upload", status: "planned" },
-      { name: "Dropzone", status: "planned" },
-      { name: "Form Field", status: "planned" },
-      { name: "Field Group", status: "planned" },
-      { name: "Inline Validation", status: "ready" },
-    ],
-  },
-  {
-    title: "Navigation",
-    items: [
-      { name: "Tabs", status: "ready" },
-      { name: "Breadcrumb", status: "planned" },
-      { name: "Dropdown Menu", status: "planned" },
-      { name: "Context Menu", status: "planned" },
-      { name: "Pagination", status: "ready" },
-      { name: "Stepper", status: "planned" },
-      { name: "Sidebar Navigation", status: "ready" },
-      { name: "Command Palette", status: "planned" },
-    ],
-  },
-  {
-    title: "Data Display",
-    items: [
-      { name: "Card", status: "ready" },
-      { name: "Surface", status: "ready" },
-      { name: "Badge", status: "ready" },
-      { name: "Table", status: "ready" },
-      { name: "Data Table", status: "planned" },
-      { name: "Sortable Header", status: "planned" },
-      { name: "Column Visibility", status: "planned" },
-      { name: "Row Selection", status: "planned" },
-      { name: "Metric / KPI", status: "planned" },
-      { name: "Description List", status: "planned" },
-      { name: "Key Value", status: "planned" },
-      { name: "Avatar", status: "planned" },
-      { name: "User Chip", status: "planned" },
-      { name: "Progress", status: "planned" },
-      { name: "Timeline", status: "planned" },
-      { name: "Tree View", status: "planned" },
-      { name: "Accordion", status: "planned" },
-      { name: "Collapsible", status: "planned" },
-      { name: "Code / Mono Value", status: "ready" },
-    ],
-  },
-  {
-    title: "Feedback & State",
-    items: [
-      { name: "Alert", status: "ready" },
-      { name: "Toast", status: "planned" },
-      { name: "Skeleton", status: "ready" },
-      { name: "Spinner", status: "ready" },
-      { name: "Empty State", status: "ready" },
-      { name: "Error State", status: "planned" },
-      { name: "No Permission State", status: "planned" },
-      { name: "Offline State", status: "planned" },
-      { name: "Loading Overlay", status: "planned" },
-      { name: "Inline Status", status: "ready" },
-    ],
-  },
-  {
-    title: "Overlay & Floating UI",
-    items: [
-      { name: "Dialog", status: "ready" },
-      { name: "Confirm Dialog", status: "ready" },
-      { name: "Drawer", status: "planned" },
-      { name: "Sheet", status: "planned" },
-      { name: "Popover", status: "planned" },
-      { name: "Tooltip", status: "planned" },
-      { name: "Dropdown Panel", status: "planned" },
-    ],
-  },
-  {
-    title: "Layout & Page Structure",
-    items: [
-      { name: "App Shell", status: "ready" },
-      { name: "Page Container", status: "ready" },
-      { name: "Page Header", status: "ready" },
-      { name: "Toolbar", status: "ready" },
-      { name: "Filter Bar", status: "planned" },
-      { name: "Section Header", status: "planned" },
-      { name: "Divider", status: "ready" },
-      { name: "Grid", status: "planned" },
-      { name: "Stack", status: "planned" },
-      { name: "Split Pane", status: "planned" },
-      { name: "Master Detail", status: "planned" },
-      { name: "Sticky Action Bar", status: "planned" },
-    ],
-  },
-  {
-    title: "Operational & Enterprise",
-    items: [
-      { name: "Status Summary", status: "planned" },
-      { name: "Filter Chips", status: "planned" },
-      { name: "Advanced Filter", status: "planned" },
-      { name: "Saved Filter", status: "planned" },
-      { name: "Bulk Action Bar", status: "planned" },
-      { name: "Selection Counter", status: "planned" },
-      { name: "Audit Trail", status: "planned" },
-      { name: "Activity Feed", status: "planned" },
-      { name: "Approval State", status: "planned" },
-      { name: "Workflow Step", status: "planned" },
-      { name: "Entity Header", status: "planned" },
-      { name: "Metadata Panel", status: "planned" },
-      { name: "Attachment List", status: "planned" },
-      { name: "Import Summary", status: "planned" },
-      { name: "Export Action", status: "planned" },
-      { name: "Conflict State", status: "planned" },
-      { name: "Unsaved Changes", status: "planned" },
-    ],
+    id: "3",
+    asset: "Penyulang Utara",
+    location: "BDG-032",
+    voltage: "20 kV",
+    status: "Normal",
+    updated: "12 Sep 2026",
   },
 ];
+const columns: LegacyColumnDef<Sample>[] = [
+  { accessorKey: "asset", header: "Aset" },
+  { accessorKey: "location", header: "Kode lokasi" },
+  { accessorKey: "voltage", header: "Tegangan" },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ getValue }) => (
+      <Badge severity={getValue() === "Normal" ? "normal" : "warning"}>
+        {String(getValue())}
+      </Badge>
+    ),
+  },
+  { accessorKey: "updated", header: "Pembaruan" },
+  {
+    id: "actions",
+    header: "Aksi",
+    cell: () => (
+      <IconButton variant="ghost" aria-label="Aksi baris">
+        <MoreHorizontal size={15} aria-hidden="true" />
+      </IconButton>
+    ),
+  },
+];
+const events = [
+  {
+    id: "1",
+    title: "Data diperbarui",
+    detail: "Metadata aset diverifikasi",
+    actor: "Operator",
+    time: "14 Sep · 09:42",
+  },
+  { id: "2", title: "Review selesai", actor: "Supervisor", time: "13 Sep · 16:10" },
+];
 
-const tabItems = [
-  {
-    value: "aktif",
-    label: "Aktif",
-  },
-  {
-    value: "review",
-    label: "Review",
-  },
-  {
-    value: "arsip",
-    label: "Arsip",
-  },
-] as const;
-
-const colors = [
-  ["Canvas", "var(--color-canvas)"],
-  ["Surface", "var(--color-surface-1)"],
-  ["Elevated", "var(--color-surface-2)"],
-  ["Border", "var(--color-border)"],
-  ["Accent", "var(--color-accent)"],
-  ["Normal", "var(--color-normal)"],
-  ["Warning", "var(--color-warning)"],
-  ["Critical", "var(--color-critical)"],
-] as const;
+function LabSection({
+  title,
+  children,
+}: {
+  title: (typeof sections)[number];
+  children: ReactNode;
+}) {
+  return (
+    <section id={title.toLowerCase().replace(/[^a-z]+/g, "-")} className="og-lab-section">
+      <header>
+        <span className="og-lab-section__index">
+          {String(sections.indexOf(title) + 1).padStart(2, "0")}
+        </span>
+        <h2>{title}</h2>
+      </header>
+      <div className="og-lab-section__body">{children}</div>
+    </section>
+  );
+}
+function Demo({
+  label,
+  children,
+  wide = false,
+}: {
+  label: string;
+  children: ReactNode;
+  wide?: boolean;
+}) {
+  return (
+    <div className={`og-lab-demo ${wide ? "og-lab-demo--wide" : ""}`}>
+      <h3>{label}</h3>
+      <div className="og-lab-demo__content">{children}</div>
+    </div>
+  );
+}
 
 export default function UiLabPage() {
+  const [density, setDensity] = useState<"comfortable" | "standard" | "compact">(
+    "standard",
+  );
+  const [single, setSingle] = useState<string | null>("150");
+  const [multi, setMulti] = useState<string[]>([
+    "150",
+    "70",
+    "275",
+    "500",
+    "20",
+    "11",
+    "10",
+    "6",
+    "110",
+    "66",
+    "33",
+    "13.8",
+    "3.3",
+    "765",
+    "220",
+    "132",
+    "88",
+    "30",
+    "22",
+    "6.6",
+    "0.4",
+    "0.23",
+  ]);
   const [tab, setTab] = useState("aktif");
-
+  const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
+  const [blocking, setBlocking] = useState(false);
+  const [chips, setChips] = useState([
+    { id: "status", label: "Status: Normal" },
+    { id: "voltage", label: "Tegangan: 150 kV" },
+  ]);
+  const [files, setFiles] = useState<string[]>([]);
+  const [selected, setSelected] = useState(false);
 
   return (
     <PageContainer>
       <PageHeader
-        eyebrow="Internal design system"
-        title="UI Laboratory"
-        description="Production component registry for OPERGRID. Every visual primitive shown as Ready must be reused globally instead of recreated inside a feature."
-        actions={<UiLabDensityControl />}
-      />
-
-      <nav className="og-lab-nav" aria-label="UI Laboratory sections">
-        <a href="#registry">Registry</a>
-        <a href="#foundation">Foundation</a>
-        <a href="#actions">Actions</a>
-        <a href="#forms">Forms</a>
-        <a href="#feedback">Feedback</a>
-        <a href="#data">Data</a>
-        <a href="#navigation">Navigation</a>
-        <a href="#overlay">Overlay</a>
-        <a href="#composition">Composition</a>
-      </nav>
-
-      <main className="og-lab">
-        <section id="registry" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">01 Â· Source of truth</span>
-
-              <h2>Global Component Registry</h2>
-
-              <p>
-                Lengkap, termasuk komponen yang sudah siap dan komponen enterprise yang
-                perlu dibangun.
-              </p>
-            </div>
-
-            <Badge severity="info">Living contract</Badge>
-          </div>
-
-          <div className="og-lab-registry">
-            {registry.map((group) => (
-              <Card key={group.title} className="og-lab-registry__group">
-                <CardHeader>
-                  <CardTitle>{group.title}</CardTitle>
-                </CardHeader>
-
-                <CardContent>
-                  <div className="og-lab-registry__items">
-                    {group.items.map((item) => (
-                      <div key={item.name} className="og-lab-registry__item">
-                        <span>{item.name}</span>
-
-                        <Badge severity={item.status === "ready" ? "normal" : "neutral"}>
-                          {item.status === "ready" ? "Ready" : "Planned"}
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+        eyebrow="Internal reference"
+        title="OPERGRID UI System"
+        description="Production components and design foundations for operational work."
+        actions={
+          <ButtonGroup label="Kepadatan antarmuka">
+            {(["comfortable", "standard", "compact"] as const).map((item) => (
+              <Button
+                key={item}
+                variant={density === item ? "primary" : "secondary"}
+                aria-pressed={density === item}
+                onClick={() => {
+                  setDensity(item);
+                  document.documentElement.dataset.density = item;
+                }}
+              >
+                {item}
+              </Button>
             ))}
-          </div>
-        </section>
-
-        <section id="foundation" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">02 Â· Foundation</span>
-
-              <h2>Visual Foundation</h2>
-
-              <p>
-                Typography, token color, radius, spacing, operational data, theme and
-                density.
-              </p>
+          </ButtonGroup>
+        }
+      />
+      <nav className="og-lab-nav" aria-label="Bagian UI Lab">
+        {sections.map((section) => (
+          <a key={section} href={`#${section.toLowerCase().replace(/[^a-z]+/g, "-")}`}>
+            {section}
+          </a>
+        ))}
+      </nav>
+      <div className="og-lab">
+        <LabSection title="Foundation">
+          <Demo label="Typography">
+            <div className="og-lab-type">
+              <p className="og-title">Operational workspace</p>
+              <p className="og-section-title">Section heading</p>
+              <p>Interface text for long-session reading.</p>
+              <MonoValue>SDKAL-L01 · 150.00 kV</MonoValue>
             </div>
-          </div>
-
-          <div className="og-lab-foundation-grid">
-            <Card>
-              <CardHeader>
-                <div>
-                  <CardTitle>Typography</CardTitle>
-
-                  <CardDescription>Official type hierarchy.</CardDescription>
+          </Demo>
+          <Demo label="Color roles">
+            <div className="og-lab-swatches">
+              {[
+                "canvas",
+                "surface",
+                "surface-subtle",
+                "border",
+                "accent",
+                "success",
+                "warning",
+                "danger",
+              ].map((name) => (
+                <div key={name}>
+                  <span style={{ background: `var(--color-${name})` }} />
+                  <small>{name}</small>
                 </div>
-              </CardHeader>
-
-              <CardContent>
-                <div className="og-lab-type-list">
-                  <div>
-                    <span>Page title</span>
-                    <strong className="og-lab-type-page">Operational Workspace</strong>
-                  </div>
-
-                  <div>
-                    <span>Section title</span>
-                    <strong className="og-lab-type-section">Functional Location</strong>
-                  </div>
-
-                  <div>
-                    <span>Body / UI</span>
-                    <p>Primary operational interface text</p>
-                  </div>
-
-                  <div>
-                    <span>Operational data</span>
-                    <code>150.00 kV Â· 346.8 A Â· 21:48:07</code>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <div>
-                  <CardTitle>Color tokens</CardTitle>
-
-                  <CardDescription>Accent is signal, not decoration.</CardDescription>
-                </div>
-              </CardHeader>
-
-              <CardContent>
-                <div className="og-lab-color-grid">
-                  {colors.map(([label, color]) => (
-                    <div key={label} className="og-lab-color">
-                      <span
-                        style={{
-                          background: color,
-                        }}
-                        aria-hidden="true"
-                      />
-
-                      <strong>{label}</strong>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Geometry</CardTitle>
-              </CardHeader>
-
-              <CardContent>
-                <dl className="og-lab-values">
-                  <div>
-                    <dt>Control height</dt>
-                    <dd>34 px</dd>
-                  </div>
-
-                  <div>
-                    <dt>Control radius</dt>
-                    <dd>6 px</dd>
-                  </div>
-
-                  <div>
-                    <dt>Card radius</dt>
-                    <dd>8 px</dd>
-                  </div>
-
-                  <div>
-                    <dt>Dialog radius</dt>
-                    <dd>10 px</dd>
-                  </div>
-                </dl>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Semantic status</CardTitle>
-              </CardHeader>
-
-              <CardContent>
-                <div className="og-lab-badge-row">
-                  <Badge severity="neutral">Neutral</Badge>
-                  <Badge severity="info">Info</Badge>
-                  <Badge severity="normal">Normal</Badge>
-                  <Badge severity="warning">Warning</Badge>
-                  <Badge severity="high">High</Badge>
-                  <Badge severity="critical">Critical</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        <section id="actions" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">03 Â· Actions</span>
-
-              <h2>Buttons & Actions</h2>
-
-              <p>One geometry. Variants describe purpose, not size.</p>
+              ))}
             </div>
-          </div>
+          </Demo>
+          <Demo label="Spacing, radius, focus, motion, density">
+            <p>
+              4px rhythm · 6px controls · 8px surfaces · one 36px action/field height ·
+              visible keyboard focus · reduced motion
+            </p>
+          </Demo>
+        </LabSection>
 
-          <Card>
-            <CardContent>
-              <div className="og-lab-demo-row">
-                <Button>
-                  <Check size={15} aria-hidden="true" />
-                  Simpan
-                </Button>
-
-                <Button variant="secondary">
-                  <RefreshCw size={15} aria-hidden="true" />
-                  Refresh
-                </Button>
-
-                <Button variant="ghost">
-                  <Settings2 size={15} aria-hidden="true" />
-                  Pengaturan
-                </Button>
-
-                <Button variant="danger">
-                  <Trash2 size={15} aria-hidden="true" />
-                  Hapus
-                </Button>
-
-                <Button variant="secondary" iconOnly aria-label="More actions">
-                  <MoreHorizontal size={16} aria-hidden="true" />
-                </Button>
-
-                <Button loading>Menyimpan</Button>
-
-                <Button disabled>Disabled</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        <section id="forms" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">04 Â· Data entry</span>
-
-              <h2>Form Controls</h2>
-
-              <p>
-                Same geometry, field language and validation behavior across every module.
-              </p>
+        <LabSection title="Actions">
+          <Demo label="Button language" wide>
+            <div className="og-lab-row">
+              <Button>
+                <Plus size={15} />
+                Primary
+              </Button>
+              <Button variant="secondary">Secondary</Button>
+              <Button variant="ghost">Ghost</Button>
+              <Button variant="danger">Danger</Button>
+              <IconButton variant="secondary" aria-label="More actions">
+                <MoreHorizontal size={16} />
+              </IconButton>
+              <Button loading>Loading</Button>
+              <Button disabled>Disabled</Button>
+              <CopyAction value="SDKAL-L01" />
             </div>
-          </div>
-
-          <Card>
-            <CardContent>
-              <div className="og-lab-form-grid">
-                <Input label="Nama" placeholder="Masukkan nama" />
-
-                <Select label="Status" defaultValue="aktif">
-                  <option value="aktif">Aktif</option>
-                  <option value="nonaktif">Nonaktif</option>
-                </Select>
-
-                <SearchField placeholder="Cari Functional Location..." />
-
-                <Input label="Kode" defaultValue="SDKAL-L01" readOnly />
-
-                <Input label="Wajib diisi" error="Field ini wajib diisi." required />
-
-                <Textarea label="Catatan" placeholder="Tambahkan catatan operasional" />
-
-                <Checkbox
-                  label="Aktif"
-                  description="Data dapat digunakan dalam workflow."
-                  defaultChecked
-                />
-
-                <Switch
-                  label="Notifikasi"
-                  description="Kirim notifikasi ketika data berubah."
-                  defaultChecked
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        <section id="feedback" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">05 Â· Feedback</span>
-
-              <h2>Feedback & System State</h2>
+          </Demo>
+          <Demo label="Button group & split action">
+            <div className="og-lab-row">
+              <ButtonGroup>
+                <Button variant="secondary">Hari ini</Button>
+                <Button variant="secondary">7 hari</Button>
+                <Button variant="secondary">30 hari</Button>
+              </ButtonGroup>
+              <SplitButton
+                label="Jalankan"
+                onAction={() => Toast.info("Aksi dimulai")}
+                items={[
+                  {
+                    id: "later",
+                    label: "Jadwalkan",
+                    onAction: () => Toast.info("Dijadwalkan"),
+                  },
+                ]}
+              />
             </div>
-          </div>
+          </Demo>
+        </LabSection>
 
-          <div className="og-lab-two-column">
+        <LabSection title="Form & Input">
+          <Demo label="Text fields">
+            <div className="og-lab-form">
+              <Input label="Nama aset" placeholder="Masukkan nama" required />
+              <NumberInput label="Tegangan" placeholder="150" />
+              <PasswordInput label="Kata sandi" />
+              <Textarea label="Catatan" placeholder="Tambahkan catatan" />
+              <SearchField placeholder="Cari aset" />
+              <Input label="Kesalahan" error="Wajib diisi" />
+              <Input label="Hanya baca" value="SDKAL-L01" readOnly />
+              <Input label="Tidak aktif" value="Nonaktif" disabled />
+            </div>
+          </Demo>
+          <Demo label="Selection controls">
             <div className="og-lab-stack">
-              <Alert severity="info" title="Informasi">
-                Data referensi berhasil dimuat.
-              </Alert>
-
-              <Alert severity="success" title="Berhasil">
-                Perubahan berhasil disimpan.
-              </Alert>
-
-              <Alert severity="warning" title="Perhatian">
-                Beberapa data perlu diverifikasi.
-              </Alert>
-
-              <Alert severity="critical" title="Gagal">
-                Data tidak dapat disimpan.
-              </Alert>
+              <Checkbox label="Aktif" />
+              <RadioGroup
+                label="Prioritas"
+                name="priority"
+                options={[
+                  { value: "normal", label: "Normal" },
+                  { value: "high", label: "Tinggi" },
+                ]}
+                defaultValue="normal"
+              />
+              <Switch label="Notifikasi" />
             </div>
+          </Demo>
+          <Demo label="Select family" wide>
+            <div className="og-lab-form">
+              <Select
+                label="Single Select"
+                options={selectOptions}
+                value={single}
+                onChange={setSingle}
+              />
+              <SearchableSelect
+                label="Searchable Select / ComboBox"
+                options={selectOptions}
+                defaultValue="70"
+              />
+              <MultiSelect
+                label="Multi Select — semua nilai tetap terlihat"
+                options={selectOptions}
+                value={multi}
+                onChange={setMulti}
+              />
+              <AsyncSelect
+                label="Async-ready Select"
+                options={selectOptions}
+                defaultValue="150"
+                placeholder="Cari aset eksternal"
+                description="Sumber data tersinkron secara asinkron"
+                isLoading
+                onSearchChange={() => {}}
+              />
+              <Select
+                label="Error state"
+                options={selectOptions}
+                error="Pilih tegangan yang tersedia"
+              />
+              <Select
+                label="Disabled state"
+                options={selectOptions}
+                defaultValue="150"
+                disabled
+              />
+            </div>
+          </Demo>
+          <Demo label="Date & time family" wide>
+            <div className="og-lab-form">
+              <DatePicker label="Date Picker" />
+              <TimePicker label="Time Picker" />
+              <DateTimePicker label="DateTime Picker" />
+              <DateRangePicker label="Date Range Picker" />
+            </div>
+          </Demo>
+          <Demo label="File input">
+            <div className="og-lab-stack">
+              <FileUpload
+                label="File Upload"
+                onFiles={(next) => setFiles(next.map((file) => file.name))}
+              />
+              <Dropzone
+                label="Dropzone"
+                onFiles={(next) => setFiles(next.map((file) => file.name))}
+              />
+              {files.length ? <p>{files.join(", ")}</p> : null}
+            </div>
+          </Demo>
+          <Demo label="Field Group">
+            <FieldGroup legend="Data teknis">
+              <Input label="Kode lokasi" placeholder="FL-001" />
+            </FieldGroup>
+          </Demo>
+        </LabSection>
 
+        <LabSection title="Navigation">
+          <Demo label="Tabs">
+            <Tabs
+              ariaLabel="Status aset"
+              items={[
+                { value: "aktif", label: "Aktif" },
+                { value: "review", label: "Review" },
+                { value: "arsip", label: "Arsip" },
+              ]}
+              value={tab}
+              onValueChange={setTab}
+            />
+          </Demo>
+          <Demo label="Breadcrumb">
+            <Breadcrumb
+              items={[
+                { label: "Workspace", href: "/" },
+                { label: "Aset", href: "/" },
+                { label: "Detail" },
+              ]}
+            />
+          </Demo>
+          <Demo label="Pagination">
+            <Pagination
+              page={page}
+              totalPages={4}
+              onPrevious={() => setPage((current) => current - 1)}
+              onNext={() => setPage((current) => current + 1)}
+            />
+          </Demo>
+          <Demo label="Stepper">
+            <Stepper steps={["Input", "Review", "Selesai"]} current={1} />
+          </Demo>
+          <Demo label="Dropdown Menu">
+            <DropdownMenu
+              items={[
+                {
+                  id: "refresh",
+                  label: "Muat ulang",
+                  onAction: () => Toast.info("Data dimuat ulang"),
+                },
+                {
+                  id: "export",
+                  label: "Ekspor",
+                  onAction: () => Toast.info("Ekspor dimulai"),
+                },
+              ]}
+            />
+          </Demo>
+          <Demo label="Command Palette">
+            <Button variant="secondary" onClick={() => setCommandOpen(true)}>
+              Buka perintah
+            </Button>
+            <CommandPalette
+              open={commandOpen}
+              onClose={() => setCommandOpen(false)}
+              commands={[
+                {
+                  id: "new",
+                  label: "Tambah aset",
+                  onAction: () => Toast.info("Tambah aset"),
+                },
+              ]}
+            />
+          </Demo>
+        </LabSection>
+
+        <LabSection title="Data Display">
+          <Demo label="Card">
             <Card>
               <CardHeader>
-                <CardTitle>Loading & Empty</CardTitle>
+                <CardTitle>Ringkasan aset</CardTitle>
               </CardHeader>
-
-              <CardContent>
-                <div className="og-lab-skeleton">
-                  <Skeleton />
-                  <Skeleton />
-                  <Skeleton />
-                </div>
-
-                <Divider />
-
-                <EmptyState
-                  compact
-                  title="Belum ada data"
-                  description="Belum ada data untuk filter yang dipilih."
-                  action={
-                    <Button>
-                      <Plus size={15} aria-hidden="true" />
-                      Tambah data
-                    </Button>
-                  }
-                />
-              </CardContent>
+              <CardContent>Informasi padat dalam satu permukaan.</CardContent>
             </Card>
-          </div>
-        </section>
-
-        <section id="data" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">06 Â· Data display</span>
-
-              <h2>Card, Table & Pagination</h2>
+          </Demo>
+          <Demo label="Surface & divider">
+            <Surface tone="subtle">
+              Permukaan sekunder
+              <Divider />
+              Pemisah konten
+            </Surface>
+          </Demo>
+          <Demo label="Status">
+            <div className="og-lab-row">
+              <Badge severity="normal">Normal</Badge>
+              <Badge severity="warning">Review</Badge>
+              <Badge severity="critical">Kritis</Badge>
             </div>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <div>
-                <CardTitle>Operational Assets</CardTitle>
-
-                <CardDescription>
-                  Standard table shell for structured data.
-                </CardDescription>
-              </div>
-
-              <Badge severity="normal">2 active</Badge>
-            </CardHeader>
-
+          </Demo>
+          <Demo label="Metric">
+            <Metric label="Aset aktif" value="1,284" unit="unit" />
+          </Demo>
+          <Demo label="Key value & description">
+            <DescriptionList
+              items={[
+                { label: "Kode", value: <MonoValue>FL-001</MonoValue> },
+                { label: "Wilayah", value: "Bandung" },
+              ]}
+            />
+          </Demo>
+          <Demo label="Avatar & user">
+            <UserChip name="Operator Grid" detail="Workspace" />
+            <Avatar name="Site Lead" />
+          </Demo>
+          <Demo label="Progress">
+            <Progress value={64} label="Progress sinkronisasi" />
+          </Demo>
+          <Demo label="Table">
             <TableWrap>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableHeaderCell>Asset</TableHeaderCell>
-                    <TableHeaderCell>Lokasi</TableHeaderCell>
+                    <TableHeaderCell>Aset</TableHeaderCell>
                     <TableHeaderCell numeric>Tegangan</TableHeaderCell>
-                    <TableHeaderCell>Status</TableHeaderCell>
-                    <TableHeaderCell>Aksi</TableHeaderCell>
                   </TableRow>
                 </TableHead>
-
                 <TableBody>
                   <TableRow>
-                    <TableCell>SDKAL-L01</TableCell>
-                    <TableCell>GI Sidikalang</TableCell>
-                    <TableCell numeric>149.82 kV</TableCell>
-                    <TableCell>
-                      <Badge severity="normal">Normal</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="ghost" iconOnly aria-label="Asset actions">
-                        <MoreHorizontal size={16} aria-hidden="true" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>TOBA-TRF01</TableCell>
-                    <TableCell>GI Toba</TableCell>
-                    <TableCell numeric>151.04 kV</TableCell>
-                    <TableCell>
-                      <Badge severity="warning">Review</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="ghost" iconOnly aria-label="Transformer actions">
-                        <MoreHorizontal size={16} aria-hidden="true" />
-                      </Button>
-                    </TableCell>
+                    <TableCell>Gardu Induk Bandung</TableCell>
+                    <TableCell numeric>150 kV</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </TableWrap>
-
-            <CardFooter>
-              <Pagination page={1} totalPages={8} />
-            </CardFooter>
-          </Card>
-        </section>
-
-        <section id="navigation" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">07 Â· Navigation</span>
-
-              <h2>Tabs & Toolbar</h2>
-            </div>
-          </div>
-
-          <Card>
-            <CardContent>
-              <Tabs
-                ariaLabel="Sample data state"
-                items={tabItems}
-                value={tab}
-                onValueChange={setTab}
-              />
-
-              <div className="og-lab-toolbar-gap" />
-
-              <Toolbar
-                leading={
-                  <>
-                    <SearchField placeholder="Cari data..." />
-
-                    <Button variant="secondary">
-                      <Filter size={15} aria-hidden="true" />
-                      Filter
-                    </Button>
-                  </>
-                }
-                trailing={
-                  <>
-                    <Button variant="secondary">
-                      <Download size={15} aria-hidden="true" />
-                      Export
-                    </Button>
-
-                    <Button>
-                      <Plus size={15} aria-hidden="true" />
-                      Tambah
-                    </Button>
-                  </>
-                }
-              />
-            </CardContent>
-          </Card>
-        </section>
-
-        <section id="overlay" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">08 Â· Overlay</span>
-
-              <h2>Dialog</h2>
-            </div>
-          </div>
-
-          <Card>
-            <CardContent>
-              <div className="og-lab-demo-row">
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setDialogOpen(true);
-                  }}
-                >
-                  <CircleAlert size={15} aria-hidden="true" />
-                  Open confirmation
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        <section id="composition" className="og-lab-section">
-          <div className="og-lab-section__head">
-            <div>
-              <span className="og-lab-section__eyebrow">09 Â· Page composition</span>
-
-              <h2>Production Page Pattern</h2>
-
-              <p>Example composition only from reusable production components.</p>
-            </div>
-          </div>
-
-          <Surface className="og-lab-page-preview">
-            <PageHeader
-              eyebrow="Master Data"
-              title="Functional Location"
-              description="Kelola struktur referensi aset operasional."
-              actions={
-                <Button>
-                  <Plus size={15} aria-hidden="true" />
-                  Tambah
-                </Button>
-              }
+          </Demo>
+          <Demo label="Advanced DataTable" wide>
+            <AdvancedDataTable<Sample>
+              data={rows}
+              columns={columns}
+              getRowId={(row) => row.id}
+              keyColumnId="asset"
+              actionColumnId="actions"
+              numericColumnIds={["voltage"]}
+              monoColumnIds={["location", "voltage", "updated"]}
+              title="Daftar aset"
+              pageSize={2}
+              filters={[
+                {
+                  columnId: "status",
+                  label: "Status",
+                  options: [
+                    { value: "Normal", label: "Normal" },
+                    { value: "Review", label: "Review" },
+                  ],
+                },
+              ]}
+              bulkActions={() => <Button variant="secondary">Ekspor pilihan</Button>}
+              toolbarActions={<Button variant="secondary">Ekspor</Button>}
             />
+          </Demo>
+        </LabSection>
 
-            <Toolbar
-              leading={
-                <>
-                  <SearchField placeholder="Cari functional location..." />
-
-                  <Button variant="secondary">
-                    <Filter size={15} aria-hidden="true" />
-                    Filter
-                  </Button>
-                </>
-              }
-              trailing={
-                <>
-                  <Button variant="secondary">
-                    <Upload size={15} aria-hidden="true" />
-                    Import
-                  </Button>
-
-                  <Button variant="secondary" iconOnly aria-label="Notifications">
-                    <Bell size={16} aria-hidden="true" />
-                  </Button>
-                </>
-              }
-            />
-
-            <Card>
-              <TableWrap>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableHeaderCell>Functional Location</TableHeaderCell>
-                      <TableHeaderCell>Description</TableHeaderCell>
-                      <TableHeaderCell>Status</TableHeaderCell>
-                      <TableHeaderCell>Action</TableHeaderCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>UPTPSR-SDKAL-L01</TableCell>
-                      <TableCell>Line Bay Sidikalang</TableCell>
-                      <TableCell>
-                        <Badge severity="normal">Active</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="ghost" iconOnly aria-label="Open row actions">
-                          <ChevronDown size={15} aria-hidden="true" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableWrap>
-            </Card>
-
-            <Alert severity="info" title="Pattern rule">
-              Feature may change workflow and domain composition, but must reuse global
-              primitives.
+        <LabSection title="Feedback & States">
+          <Demo label="Alert">
+            <Alert severity="warning" title="Perlu perhatian">
+              Periksa data sebelum menyimpan.
             </Alert>
-          </Surface>
-        </section>
-      </main>
-
-      <Dialog
-        open={dialogOpen}
-        title="Konfirmasi perubahan"
-        description="Pastikan data yang dipilih sudah benar."
-        onClose={() => {
-          setDialogOpen(false);
-        }}
-        footer={
-          <>
+          </Demo>
+          <Demo label="Spinner & skeleton">
+            <div className="og-lab-stack">
+              <Spinner />
+              <Skeleton style={{ width: "70%" }} />
+              <Skeleton />
+            </div>
+          </Demo>
+          <Demo label="Empty State">
+            <EmptyState
+              title="Belum ada data"
+              description="Data baru akan muncul di sini."
+              compact
+            />
+          </Demo>
+          <Demo label="Error State">
+            <ErrorState description="Permintaan tidak dapat diselesaikan." />
+          </Demo>
+          <Demo label="No Permission">
+            <NoPermissionState />
+          </Demo>
+          <Demo label="Offline">
+            <OfflineState />
+          </Demo>
+          <Demo label="Section Loader">
+            <SectionLoader />
+          </Demo>
+          <Demo label="Page Loader">
+            <PageLoader />
+          </Demo>
+          <Demo label="Progress Loader">
+            <ProgressLoader value={62} label="Impor data" />
+          </Demo>
+          <Demo label="Toast">
+            <Button
+              variant="secondary"
+              onClick={() => Toast.success("Perubahan disimpan")}
+            >
+              Tampilkan toast
+            </Button>
+          </Demo>
+          <Demo label="Modal Loader">
             <Button
               variant="secondary"
               onClick={() => {
-                setDialogOpen(false);
+                setBlocking(true);
+                window.setTimeout(() => setBlocking(false), 1400);
               }}
             >
-              Batal
+              Tampilkan loader
             </Button>
+            <ModalLoader open={blocking} />
+          </Demo>
+        </LabSection>
 
-            <Button
-              onClick={() => {
-                setDialogOpen(false);
-              }}
-            >
-              Konfirmasi
+        <LabSection title="Overlay">
+          <Demo label="Dialog">
+            <Button variant="secondary" onClick={() => setDialogOpen(true)}>
+              Buka dialog
             </Button>
-          </>
-        }
-      >
-        <Alert severity="warning" title="Perubahan data">
-          Perubahan akan diterapkan ke data operasional.
-        </Alert>
-      </Dialog>
+            <Dialog
+              open={dialogOpen}
+              title="Detail perubahan"
+              description="Tinjau informasi sebelum melanjutkan."
+              onClose={() => setDialogOpen(false)}
+              footer={<Button onClick={() => setDialogOpen(false)}>Selesai</Button>}
+            >
+              Konten dialog menggunakan komponen global.
+            </Dialog>
+          </Demo>
+          <Demo label="Confirm Dialog">
+            <Button variant="secondary" onClick={() => setConfirmOpen(true)}>
+              Buka konfirmasi
+            </Button>
+            <ConfirmDialog
+              open={confirmOpen}
+              title="Hapus functional location?"
+              description="Data akan dihapus dari master data dan tidak dapat dipulihkan."
+              confirmLabel="Hapus data"
+              context={
+                <>
+                  <span>Functional location</span>
+                  <strong>BDG-001 · Gardu Induk Bandung</strong>
+                </>
+              }
+              onClose={() => setConfirmOpen(false)}
+              onConfirm={() => setConfirmOpen(false)}
+              danger
+            />
+          </Demo>
+          <Demo label="Popover">
+            <Popover label="Informasi" triggerLabel="Buka popover">
+              Informasi tambahan untuk pekerjaan ini.
+            </Popover>
+          </Demo>
+          <Demo label="Tooltip">
+            <Tooltip text="Informasi tambahan">
+              <Bell size={17} aria-hidden="true" />
+            </Tooltip>
+          </Demo>
+          <Demo label="Drawer / Sheet">
+            <Button variant="secondary" onClick={() => setDrawerOpen(true)}>
+              Buka drawer
+            </Button>
+            <Drawer
+              open={drawerOpen}
+              title="Detail aset"
+              onClose={() => setDrawerOpen(false)}
+            >
+              Panel detail responsif.
+            </Drawer>
+          </Demo>
+        </LabSection>
+
+        <LabSection title="Layout">
+          <Demo label="Page structure" wide>
+            <SectionHeader title="Section Header" description="Struktur halaman global" />
+            <Toolbar
+              leading={<SearchField placeholder="Cari" />}
+              trailing={<Button variant="secondary">Filter</Button>}
+            />
+            <FilterBar>
+              <Badge severity="info">FilterBar</Badge>
+              <Button variant="ghost">Atur</Button>
+            </FilterBar>
+          </Demo>
+          <Demo label="Grid & Stack">
+            <Grid>
+              <Surface>Kolom 1</Surface>
+              <Surface>Kolom 2</Surface>
+            </Grid>
+            <Stack>
+              <Surface>Baris 1</Surface>
+              <Surface>Baris 2</Surface>
+            </Stack>
+          </Demo>
+          <Demo label="SplitPane">
+            <SplitPane aside={<Surface>Panel navigasi</Surface>}>
+              <Surface>Panel kerja</Surface>
+            </SplitPane>
+          </Demo>
+          <Demo label="MasterDetail">
+            <MasterDetail master={<Surface>Daftar</Surface>}>
+              <Surface>Detail</Surface>
+            </MasterDetail>
+          </Demo>
+          <Demo label="StickyActionBar">
+            <StickyActionBar>
+              <Button variant="secondary">Batal</Button>
+              <Button>Simpan</Button>
+            </StickyActionBar>
+          </Demo>
+        </LabSection>
+
+        <LabSection title="Operational / Enterprise">
+          <Demo label="Filter chips">
+            <FilterChips
+              items={chips}
+              onRemove={(id) =>
+                setChips((current) => current.filter((item) => item.id !== id))
+              }
+              onClear={() => setChips([])}
+            />
+          </Demo>
+          <Demo label="Advanced & saved filter">
+            <AdvancedFilter>
+              <Input label="Kode" />
+            </AdvancedFilter>
+            <SavedFilter
+              name="Area Bandung"
+              onApply={() => Toast.info("Filter diterapkan")}
+            />
+          </Demo>
+          <Demo label="Bulk action & selection">
+            <BulkActionBar count={selected ? 2 : 0} onClear={() => setSelected(false)}>
+              <Button variant="secondary" onClick={() => setSelected(true)}>
+                Pilih 2
+              </Button>
+            </BulkActionBar>
+          </Demo>
+          <Demo label="Entity Header">
+            <EntityHeader
+              headingLevel={4}
+              eyebrow="Aset"
+              title="Gardu Induk Bandung"
+              status={<Badge severity="normal">Normal</Badge>}
+            />
+          </Demo>
+          <Demo label="Metadata Panel">
+            <MetadataPanel
+              items={[
+                { label: "Kode", value: "BDG-001" },
+                { label: "Wilayah", value: "Bandung" },
+              ]}
+            />
+          </Demo>
+          <Demo label="Timeline & audit">
+            <Timeline items={events} />
+            <ActivityFeed items={events.slice(0, 1)} />
+          </Demo>
+          <Demo label="Approval & workflow">
+            <ApprovalState label="Menunggu review" severity="warning" />
+            <WorkflowStep index={2} title="Verifikasi" detail="Pemeriksaan data" active />
+          </Demo>
+          <Demo label="Attachments">
+            <AttachmentList items={[{ id: "1", name: "Laporan.pdf", size: "240 KB" }]} />
+          </Demo>
+          <Demo label="Import & export">
+            <ImportSummary
+              title="Import functional location"
+              state="partial"
+              total={1280}
+              succeeded={1268}
+              failed={12}
+              duration="00:01:42"
+              onViewErrors={() => Toast.info("Log kesalahan dibuka")}
+              onExportResult={() => Toast.info("Hasil diekspor")}
+            />
+            <div className="og-lab-row">
+              <ExportAction onExport={() => Toast.info("Ekspor dimulai")} />
+            </div>
+          </Demo>
+          <Demo label="Conflict & unsaved">
+            <ConflictState detail="Data telah diubah di tempat lain." />
+            <UnsavedChanges
+              onSave={() => Toast.success("Disimpan")}
+              onDiscard={() => Toast.info("Dibuang")}
+            />
+          </Demo>
+          <Demo label="Tree View">
+            <TreeView
+              nodes={[
+                {
+                  id: "west",
+                  label: "Wilayah Barat",
+                  children: [{ id: "bdg", label: "Bandung" }],
+                },
+              ]}
+            />
+          </Demo>
+          <Demo label="Accordion & collapsible">
+            <Accordion
+              items={[
+                { id: "one", title: "Rincian teknis", content: "Informasi teknis." },
+              ]}
+            />
+          </Demo>
+        </LabSection>
+
+        <LabSection title="Responsive">
+          <Demo label="Global behavior" wide>
+            <p>
+              Kontrol mempertahankan tinggi yang sama. Toolbar dan aksi membungkus,
+              formulir turun ke satu kolom, tabel bergulir horizontal, serta dialog dan
+              drawer mengikuti viewport.
+            </p>
+            <div className="og-lab-breakpoints">
+              <span>1440+</span>
+              <span>1280</span>
+              <span>1024</span>
+              <span>768</span>
+              <span>390</span>
+            </div>
+          </Demo>
+        </LabSection>
+
+        <LabSection title="Production Page Composition">
+          <Demo label="Operational record page" wide>
+            <Stack>
+              <EntityHeader
+                headingLevel={4}
+                title="Gardu Induk Bandung"
+                metadata={["BDG-001", "150 kV"]}
+                status={<Badge severity="normal">Active</Badge>}
+                hierarchy="UPT Bandung / GI Bandung / Bay Kopel 150 kV"
+                aside={
+                  <>
+                    <strong>Functional Location</strong>
+                    <span>Master Data</span>
+                  </>
+                }
+              />
+              <Toolbar
+                leading={<SearchField placeholder="Cari catatan" />}
+                trailing={
+                  <>
+                    <Button variant="secondary">Export</Button>
+                    <Button variant="secondary">Edit Data</Button>
+                    <Button>
+                      <Plus size={15} />
+                      Tambah Data
+                    </Button>
+                  </>
+                }
+              />
+              <Grid>
+                <Surface>
+                  <SectionHeader title="Informasi utama" />
+                  <DescriptionList
+                    items={[
+                      { label: "Wilayah", value: "Bandung" },
+                      { label: "Kapasitas", value: <MonoValue>150 kV</MonoValue> },
+                    ]}
+                  />
+                </Surface>
+                <Surface>
+                  <SectionHeader title="Aktivitas terbaru" />
+                  <Timeline items={events} />
+                </Surface>
+              </Grid>
+            </Stack>
+          </Demo>
+        </LabSection>
+      </div>
     </PageContainer>
   );
 }
