@@ -1,14 +1,7 @@
-export type SupabasePublicConfig = {
-  url: string;
-  anonKey: string;
-};
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-type PublicSupabaseEnvironmentKey =
-  "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_ANON_KEY";
-
-function readRequiredPublicEnvironment(key: PublicSupabaseEnvironmentKey): string {
-  const value = process.env[key]?.trim();
-
+function requirePublicEnvironment(value: string | undefined, key: string): string {
   if (!value) {
     throw new Error(`Missing required environment variable: ${key}`);
   }
@@ -16,9 +9,9 @@ function readRequiredPublicEnvironment(key: PublicSupabaseEnvironmentKey): strin
   return value;
 }
 
-export function getSupabasePublicConfig(): SupabasePublicConfig {
+export function getSupabasePublicConfig() {
   return {
-    url: readRequiredPublicEnvironment("NEXT_PUBLIC_SUPABASE_URL"),
-    anonKey: readRequiredPublicEnvironment("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+    url: requirePublicEnvironment(supabaseUrl, "NEXT_PUBLIC_SUPABASE_URL"),
+    anonKey: requirePublicEnvironment(supabaseAnonKey, "NEXT_PUBLIC_SUPABASE_ANON_KEY"),
   };
 }

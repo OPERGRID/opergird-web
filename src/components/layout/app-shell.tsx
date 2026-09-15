@@ -15,6 +15,7 @@ import { type ReactNode, useState } from "react";
 import { Dialog as AriaDialog, Modal, ModalOverlay } from "react-aria-components";
 
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { UserMenu } from "@/components/layout/user-menu";
 import { Button } from "@/components/ui/button";
 import { isNavigationItemActive, workspaceNavigation } from "@/config/navigation";
 import { cn } from "@/lib/utils/cn";
@@ -183,20 +184,7 @@ export function AppShell({ children }: AppShellProps) {
           <div className="og-topbar__actions">
             <ThemeToggle />
 
-            <div
-              className="og-user-placeholder"
-              role="group"
-              aria-label="Area profil pengguna"
-            >
-              <span className="og-user-placeholder__avatar" aria-hidden="true">
-                OP
-              </span>
-
-              <span className="og-user-placeholder__copy">
-                <strong>Operator</strong>
-                <span>Workspace</span>
-              </span>
-            </div>
+            <UserMenu />
           </div>
         </header>
 
