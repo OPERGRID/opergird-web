@@ -1,0 +1,70 @@
+.og-nav-item--group {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.og-nav-item__group-chevron {
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
+  transition: rotate var(--motion-fast);
+}
+
+.og-nav-item__group-chevron--open {
+  rotate: 180deg;
+}
+
+.og-nav-submenu {
+  display: none;
+  margin: 0.25rem 0 0.25rem 1.875rem;
+  padding: 0 0 0 0.625rem;
+  border-left: 1px solid var(--color-border);
+  list-style: none;
+}
+
+.og-nav-submenu--open {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.og-nav-subitem {
+  display: flex;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-control);
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  transition:
+    background var(--motion-fast),
+    color var(--motion-fast);
+}
+
+.og-nav-subitem:hover {
+  background: var(--color-control-hover);
+  color: var(--color-text);
+}
+
+.og-nav-subitem--active {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.og-nav-subitem__icon {
+  display: grid;
+  width: 1rem;
+  flex: 0 0 1rem;
+  place-items: center;
+}
+
+@media (min-width: 64rem) {
+  .og-app-shell--collapsed .og-nav-item__group-chevron,
+  .og-app-shell--collapsed .og-nav-submenu {
+    display: none;
+  }
+}
