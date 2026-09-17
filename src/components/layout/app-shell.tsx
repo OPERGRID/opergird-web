@@ -1,12 +1,17 @@
 "use client";
 
 import {
+  ChevronDown,
   ChevronLeft,
-  ChevronRight,
-  Grid2X2,
+  FileClock,
+  KeyRound,
+  LayoutDashboard,
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
+  ShieldCheck,
+  UserRound,
+  Users,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -17,19 +22,31 @@ import { Dialog as AriaDialog, Modal, ModalOverlay } from "react-aria-components
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 import { Button } from "@/components/ui/button";
-import { isNavigationItemActive, workspaceNavigation } from "@/config/navigation";
+import { isNavigationItemActive, toolsNavigation } from "@/config/navigation";
 import { cn } from "@/lib/utils/cn";
 
 type AppShellProps = {
   children: ReactNode;
 };
 
+const userManagementIcons = {
+  "user-management-overview": LayoutDashboard,
+  "user-management-users": UserRound,
+  "user-management-roles": KeyRound,
+  "user-management-scope": ShieldCheck,
+  "user-management-audit": FileClock,
+} as const;
+
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
+  const userManagement = toolsNavigation[0];
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userManagementOpen, setUserManagementOpen] = useState(true);
+
+  const userManagementActive = isNavigationItemActive(pathname, userManagement.href);
+  const topbarTitle = userManagementActive ? "User Management" : "Operational Workspace";
 
   const sidebar = (
     <aside
@@ -45,12 +62,11 @@ export function AppShell({ children }: AppShellProps) {
           }}
         >
           <span className="og-brand__mark" aria-hidden="true">
-            <Grid2X2 size={20} strokeWidth={1.8} />
+            <span className="og-brand__mark-fallback">OG</span>
           </span>
 
           <span className="og-brand__copy">
             <strong className="og-brand__name">OPERGRID</strong>
-
             <span className="og-brand__descriptor">Operational Grid</span>
           </span>
         </Link>
@@ -69,45 +85,86 @@ export function AppShell({ children }: AppShellProps) {
       </div>
 
       <nav className="og-sidebar__nav">
-        <p className="og-sidebar__section-label">Workspace</p>
+        <p className="og-sidebar__section-label">TOOLS</p>
 
         <ul className="og-sidebar__list">
-          {workspaceNavigation.map((item) => {
-            const active = isNavigationItemActive(pathname, item.href);
+          <li>
+            <button
+              type="button"
+              className={cn(
+                "og-nav-item",
+                "og-nav-item--group",
+                userManagementActive && "og-nav-item--active",
+              )}
+              aria-expanded={userManagementOpen}
+              aria-controls="user-management-submenu"
+              title={sidebarCollapsed ? userManagement.label : undefined}
+              onClick={() => {
+                if (sidebarCollapsed) {
+                  setSidebarCollapsed(false);
+                  setUserManagementOpen(true);
+                  return;
+                }
 
-            return (
-              <li key={item.id}>
-                <Link
-                  href={item.href}
-                  className={cn("og-nav-item", active && "og-nav-item--active")}
-                  aria-current={active ? "page" : undefined}
-                  title={sidebarCollapsed ? item.label : undefined}
-                  onClick={() => {
-                    setMobileOpen(false);
-                  }}
-                >
-                  <span className="og-nav-item__icon" aria-hidden="true">
-                    <Grid2X2 size={18} strokeWidth={1.8} />
-                  </span>
+                setUserManagementOpen((current) => !current);
+              }}
+            >
+              <span className="og-nav-item__icon" aria-hidden="true">
+                <Users size={18} strokeWidth={1.8} />
+              </span>
 
-                  <span className="og-nav-item__content">
-                    <span className="og-nav-item__label">{item.label}</span>
+              <span className="og-nav-item__content">
+                <span className="og-nav-item__label">{userManagement.label}</span>
+              </span>
 
-                    {item.description ? (
-                      <span className="og-nav-item__description">{item.description}</span>
-                    ) : null}
-                  </span>
+              <ChevronDown
+                className={cn(
+                  "og-nav-item__group-chevron",
+                  userManagementOpen && "og-nav-item__group-chevron--open",
+                )}
+                size={15}
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
+            </button>
 
-                  <ChevronRight
-                    className="og-nav-item__chevron"
-                    size={15}
-                    strokeWidth={1.8}
-                    aria-hidden="true"
-                  />
-                </Link>
-              </li>
-            );
-          })}
+            <ul
+              id="user-management-submenu"
+              className={cn(
+                "og-nav-submenu",
+                userManagementOpen && "og-nav-submenu--open",
+              )}
+            >
+              {userManagement.children?.map((item) => {
+                const active =
+                  item.href === userManagement.href
+                    ? pathname === item.href
+                    : isNavigationItemActive(pathname, item.href);
+                const Icon = userManagementIcons[item.id as keyof typeof userManagementIcons];
+
+                return (
+                  <li key={item.id}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "og-nav-subitem",
+                        active && "og-nav-subitem--active",
+                      )}
+                      aria-current={active ? "page" : undefined}
+                      onClick={() => {
+                        setMobileOpen(false);
+                      }}
+                    >
+                      <span className="og-nav-subitem__icon" aria-hidden="true">
+                        {Icon ? <Icon size={16} strokeWidth={1.8} /> : null}
+                      </span>
+                      <span>{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </li>
         </ul>
       </nav>
 
@@ -176,14 +233,12 @@ export function AppShell({ children }: AppShellProps) {
 
             <div className="og-topbar__context">
               <span className="og-topbar__eyebrow">OPERGRID</span>
-
-              <span className="og-topbar__title">Operational Workspace</span>
+              <span className="og-topbar__title">{topbarTitle}</span>
             </div>
           </div>
 
           <div className="og-topbar__actions">
             <ThemeToggle />
-
             <UserMenu />
           </div>
         </header>
